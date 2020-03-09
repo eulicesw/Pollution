@@ -128,7 +128,7 @@
                         <p>We are seventh semester students who care about the environment.</p>
                     </div>
                     <div class="row team-members">
-                        <div class="col-lg-3">
+                        <div class="col-lg-4">
                             <div class="team-member">
                                 <div class="team-image">
                                     <img src="/img/eulices2.jpg" alt="">
@@ -158,7 +158,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-3">
+                        <div class="col-lg-4">
                             <div class="team-member">
                                 <div class="team-image">
                                     <img src="/img/julio.jpg" alt="">
@@ -188,7 +188,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-3">
+                        <!--<div class="col-lg-3">
                             <div class="team-member">
                                 <div class="team-image">
                                     <img src="/img/erikaCutted.jpg" alt="">
@@ -217,8 +217,8 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-lg-3">
+                        </div>-->
+                        <div class="col-lg-4">
                             <div class="team-member">
                                 <div class="team-image">
                                     <img src="/img/chris.jpg" alt="">

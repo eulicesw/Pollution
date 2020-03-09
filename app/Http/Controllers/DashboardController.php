@@ -1,16 +1,27 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace ACA\Http\Controllers;
 
 use Log;
 use Illuminate\Http\Request;
-use App\Models\Temperature;
-use App\Models\Humidity;
-use App\Models\CarbonDioxide;
-use App\Models\ElementConfiguration;
+use ACA\Models\Temperature;
+use ACA\Models\Humidity;
+use ACA\Models\CarbonDioxide;
+use ACA\Models\ElementConfiguration;
 
 class DashboardController extends Controller
 {
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Show the application dashboard.
      *

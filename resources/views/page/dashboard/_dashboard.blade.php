@@ -8,11 +8,11 @@
 </div>
 <div class="card m-4">
 	<div class="row">
-		<div class="col-7">
+		<div class="col-xs-12 col-sm-7">
 			<div class="row">
-				<div class="col-12 p-3">
+				<div class="col-xs-12 col-md-12 p-3">
 					<div class="d-flex justify-content-center">
-						<div id="airvalue-index" class="p-3 mb-2 bg-success text-white w-25 text-center display-1 rounded">
+						<div id="airvalue-index" class="col-5 col-lg-3 col-xl-2 p-3 mb-2 bg-success text-white w-25 text-center display-1 rounded">
 							23
 							<a id="information-air" href="#" data-toggle="modal" data-target="#exampleModalCenter">
 								<i  class="fas fa-info-circle icon-top" style="font-size:25px;"></i>
@@ -22,7 +22,7 @@
 							<div id="airvalue-text" class="airvalue-text text-success display-3">
 								Good
 							</div>
-							<div>
+							<div class="dateupdate">
 								Updated on 
 								<span id="updated-day">Friday </span><b id="updated-time">08:00</b>.
 							</div>
@@ -34,26 +34,26 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-5" style="padding-top:15px;padding-bottom:10px;">
+		<div class="col-12 col-md-5 text-center" style="padding-top:15px;padding-bottom:10px;">
 			<div class="row">
-				<div class="col-6">
+				<div class="col-12 col-md-6">
 					<div>
 						<h5 class="title-chartstatus">Temperature</h5>
-						<div id="Temperature" style="width: 200px; height: 200px;"></div>
+						<div id="Temperature" style="width: 200px; height: 200px; margin: 0 auto;"></div>
 					</div>
 				</div>
-				<div class="col-6">
+				<div class="col-12 col-md-6">
 					<div>
 						<h5 class="title-chartstatus">Humidity</h5>
-						<div id="Humidity" style="width: 200px; height: 200px;"></div>
+						<div id="Humidity" style="width: 200px; height: 200px; margin: 0 auto;"></div>
 					</div>
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-6">
+				<div class="col-12 col-md-6">
 					<div>
 						<h5 class="title-chartstatus">CO2</h5>
-						<div id="CarbonDioxide" style="width: 200px; height: 200px;"></div>
+						<div id="CarbonDioxide" style="width: 200px; height: 200px; margin: 0 auto;"></div>
 					</div>
 				</div>
 			</div>
@@ -292,11 +292,15 @@ window.chartColors = {
 	var elements;
     $(document).ready(function() {
         $('a[href="/"]').removeClass("active");
-		$('#logo').addClass("active");
-        $('a[href="/dashboard"]').addClass("active");
-        $('#headerInicio').css("height", "20vh");
-        $('#headerInicio').css("min-height", "auto");
-        $('#textHeader').html("");
+		$('a[href="/dashboard"]').addClass("active");
+		$('#textHeader').html("");
+		if (isMobile.any()) {
+			$('#headerInicio').css("height", "60vh");
+        	$('#headerInicio').css("min-height", "20vh");
+		} else {
+			$('#headerInicio').css("height", "20vh");
+        	$('#headerInicio').css("min-height", "auto");
+		}
 		drawMainChart(false);
 		drawStatusCharts(false);
         setInterval(() => {

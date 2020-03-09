@@ -155,6 +155,11 @@ h4 {
     justify-content: space-between;
     text-align: center;
 }
+.logout {
+    background-color: #585858;
+    padding-left: 8px;
+    padding-right: 8px;
+}
 @media (min-width: 768px) {
     .contenido-header{
         text-align: left;
@@ -215,6 +220,11 @@ h4 {
 }
 .navegacion {
     display: none;
+}
+@media (max-width: 768px) {
+    .dateupdate {
+        font-size: 1rem;
+    }
 }
 @media (min-width: 768px) {
     .navegacion {
