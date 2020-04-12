@@ -7,6 +7,7 @@ use ACA\Models\Temperature;
 use ACA\Models\Humidity;
 use ACA\Models\CarbonDioxide;
 use ACA\Models\ElementConfiguration;
+use ACA\Particle;
 
 class DataSensorController extends Controller
 {
@@ -26,20 +27,24 @@ class DataSensorController extends Controller
     {
         $newTemp = new Temperature();
         $newCO2 = new CarbonDioxide();
-        $newhum = new Humidity();
+        $newHum = new Humidity();
+        $newPart = new Particle();
 
         $hora = date("H:i:s");
 
         $newTemp->grade = $request->temp;
         $newCO2->grade = $request->co;
-        $newhum->grade = $request->hum;
+        $newHum->grade = $request->hum;
+        $newPart->grade = $request->par;
 
         $newTemp->hour = $hora;
         $newCO2->hour = $hora;
-        $newhum->hour = $hora;
+        $newHum->hour = $hora;
+        $newPart->hour = $hora;
 
         $newTemp->save();
         $newCO2->save();
-        $newhum->save();
+        $newHum->save();
+        $newPart->save();
     }
 }
