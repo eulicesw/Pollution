@@ -18,6 +18,7 @@
 Route::get('/', 'Controller@index');
 Route::get('/dashboard', 'DashboardController@index');
 Route::get('/dashboard/update', 'DashboardController@update');
+Route::get('/datasensor/create', 'DataSensorController@insert');
 Auth::routes(['register' => true]); // Deactivate register view.
 
 Route::get('/home', 'Controller@index');
