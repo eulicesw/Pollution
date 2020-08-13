@@ -20,10 +20,14 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <style>
         body {
-            background-image: url(/img/contamination1.jpg);
+            /* background-image: url(/img/contamination1.jpg); */
+            background: #E3E3E3;
             background-repeat: no-repeat;
             background-attachment: fixed;
             background-size: cover;
+        }
+        .bg-green {
+            background: #162902;
         }
     </style>
 </head>

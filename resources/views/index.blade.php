@@ -136,7 +136,7 @@
                                 <div class="team-desc">
                                     <h3>Eulices Escalante</h3>
                                     <span>Software Developer</span>
-                                    <p>A dedicated person, with encouragement to continue learning, technology lover and Star Wars.</p>
+                                    <p>A dedicated person, with encouragement to continue learning, technology lover and Star Wars.</br>&nbsp;</p>
                                     <div class="align-center">
                                         <a target="_blank" href="https://www.facebook.com/eulicesw" class="btn btn-xs btn-slide btn-light">
                                             <i class="fab fa-facebook-f"></i>

@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="p-2 text-center">
+            <div class="p-2 text-center bg-green">
                 <img src="/img/logoAcaWhiteCutted.png" alt="Logotipo project">
             </div>
             <div class="card">

@@ -18,6 +18,6 @@
 Route::get('/', 'Controller@index');
 Route::get('/dashboard', 'DashboardController@index');
 Route::get('/dashboard/update', 'DashboardController@update');
-Auth::routes(['register' => false]); // Deactivate register view.
+Auth::routes(['register' => true]); // Deactivate register view.
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'Controller@index');
