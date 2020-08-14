@@ -4,9 +4,13 @@
 @section('content')
 <div class="heading-text heading-section text-center">
 	<!-- <h2>Monitoring</h2> -->
-	<h2>Sensor Manager</h2>
+	<h2>Dashboard Sensor Manager</h2>
 </div>
 <div class="container">
+    <div id="success" class="alert alert-success" role="alert">
+    </div>
+    <div id="danger" class="alert alert-danger" role="alert">
+    </div>
     <div class="row mb-5">
         @foreach ($elements as $element)
         <div class="col-12 col-sm-6 col-md-6 col-lg-4">
@@ -38,7 +42,7 @@
                             <textarea id="reason_{{ $element->id }}"class="form-control form-control-lg" id="readon_disabled" rows="3">{{ $element->reason_disabled }}</textarea>
                         </div>
                         <div class="text-center">
-                            <button class="btn btn-primary" type="buton" onclick="saveElements({{$element->id}})">Save</button>
+                            <button id="button_{{ $element->id }}" class="btn btn-primary" type="buton" onclick="saveElements({{$element->id}})">Save</button>
                         </div>
                     <!-- </form> -->
                 </div>
@@ -82,6 +86,7 @@
         // called when a message arrives
         function onMessageArrived(message) {
             console.log("onMessageArrived: " + message.payloadString);
+            // CHANGE SWITCH ON / OFF.
         }
     }
 
@@ -102,6 +107,8 @@
 
     // Save changes for element.
     function saveElements(id) {
+        $('#button_' + id).html('<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>');
+        $("#btnSubmit").attr("disabled", true);
         var element = {
             id: $('#_' + id).val(),
             name: $('#title_' + id).val(),
@@ -119,16 +126,25 @@
             },
             data: element,
             success: function(data, textStatus, xhr) {
+                $("#btnSubmit").attr("disabled", false);
+                $('#button_' + id).html("Save");
                 if( xhr.status === 200 ) {
-                    console.log("Success");
+                    $('#element_title_' + id).html(element.name);
+                    $('#danger').hide(); 
+                    $('#success').show(); 
+                    $('#success').html("<strong> " + element.name + "</strong> data saved successfully");
                     // ADD HERE THE NEW SENSOR.
                     data = {
                         "temperature": ($('#enable_1').is(":checked")) ? 1 : 0,
                         "humidity": ($('#enable_2').is(":checked")) ? 1 : 0,
-                        "carbonDioxide": ($('#enable_3').is(":checked")) ? 1 : 0
+                        "carbonDioxide": ($('#enable_3').is(":checked")) ? 1 : 0,
+                        "monoxide": ($('#enable_4').is(":checked")) ? 1 : 0
                     }
                     mqttConnect("utt/0317114967", JSON.stringify(data));
                 } else {
+                    $('#success').hide(); 
+                    $('#danger').show(); 
+                    $('#danger').html("Could not save <strong> " + $('#element_title_' + id).val() + "</strong> data, try again");
                     console.log('%c Error: ', 'color:red;font-size:16px;', 'Error server.');
                 }
             }

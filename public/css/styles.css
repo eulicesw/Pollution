@@ -1365,6 +1365,12 @@ canvas {
     font-size: 2rem;
     margin-bottom: 20px;
 }
+#success {
+    display: none;
+}
+#danger {
+    display: none;
+}
 .notbold {
     font-weight: "normal";
 }

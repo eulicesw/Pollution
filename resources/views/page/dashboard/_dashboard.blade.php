@@ -39,7 +39,7 @@
 				<div class="col-xs-12 col-sm-6 col-md-6 text-center">
 					@if($elements_configuration[0]->switched_on)
 					<div>
-						<h5 class="title-chartstatus">Temperature</h5>
+						<h5 class="title-chartstatus">{{ $elements_configuration[0]->name }}</h5>
 						<div id="Temperature" style="width: 200px; height: 200px; margin: 0 auto;"></div>
 					</div>
 					@endif
@@ -48,18 +48,39 @@
 					@endif
 				</div>
 				<div class="col-xs-12 col-sm-6 col-md-6">
+					@if($elements_configuration[1]->switched_on)
 					<div>
-						<h5 class="title-chartstatus">Humidity</h5>
+						<h5 class="title-chartstatus">{{ $elements_configuration[1]->name }}</h5>
 						<div id="Humidity" style="width: 200px; height: 200px; margin: 0 auto;"></div>
 					</div>
+					@endif
+					@if(!$elements_configuration[1]->switched_on)
+						{{ $elements_configuration[1]->reason_disabled }}
+					@endif
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-xs-12 col-sm-6 col-md-6">
+					@if($elements_configuration[2]->switched_on)
 					<div>
-						<h5 class="title-chartstatus">CO2</h5>
+						<h5 class="title-chartstatus">{{ $elements_configuration[2]->name }}</h5>
 						<div id="CarbonDioxide" style="width: 200px; height: 200px; margin: 0 auto;"></div>
 					</div>
+					@endif
+					@if(!$elements_configuration[2]->switched_on)
+						{{ $elements_configuration[2]->reason_disabled }}
+					@endif
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-6">
+					@if($elements_configuration[3]->switched_on)
+					<div>
+						<h5 class="title-chartstatus">{{ $elements_configuration[3]->name }}</h5>
+						<div id="Monoxide" style="width: 200px; height: 200px; margin: 0 auto;"></div>
+					</div>
+					@endif
+					@if(!$elements_configuration[3]->switched_on)
+						{{ $elements_configuration[3]->reason_disabled }}
+					@endif
 				</div>
 			</div>
 		</div>
@@ -293,8 +314,9 @@ window.chartColors = {
 	// Global variables.
     var temperatures;
     var humidities;
-	var co2s;
-	var elements;
+    var monoxides;
+    var co2s;
+    var elements;
     $(document).ready(function() {
         $('a[href="/"]').removeClass("active");
 		$('a[href="/dashboard"]').addClass("active");
@@ -328,17 +350,20 @@ window.chartColors = {
                         // Updating main chart.
                         temperatures = data.temperatures;
                         humidities = data.humidities;
-						co2s = data.carbondioxides;
+			co2s = data.carbondioxides;
+			monoxides = data.monoxides;
                         window.myLine.data.labels.splice(0, 1); // Remove first label.
-						window.myLine.data.datasets[0].data.splice(0, 1);
-						window.myLine.data.datasets[1].data.splice(0, 1);
-						window.myLine.data.datasets[2].data.splice(0, 1);
+			window.myLine.data.datasets[0].data.splice(0, 1);
+		        window.myLine.data.datasets[1].data.splice(0, 1);
+			window.myLine.data.datasets[2].data.splice(0, 1);
+			window.myLine.data.datasets[3].data.splice(0, 1);
                         // var totalTemp = temperatures.length;
                         // var totalHum = humidities.length;
                         window.myLine.data.labels.push(temperatures.hour); // Se actualiza la hora.
                         window.myLine.data.datasets[0].data[9] = temperatures.grade; // Actualiza los grados.
                         window.myLine.data.datasets[1].data[9] = humidities.grade; // Actualiza los grados.
-						window.myLine.data.datasets[2].data[9] = co2s.grade; // Actualiza el CO2.
+			window.myLine.data.datasets[2].data[9] = co2s.grade; // Actualiza el CO2.
+			window.myLine.data.datasets[3].data[9] = monoxides.grade; // Actualiza el Monoxido de carbono.
                         window.myLine.update();
                     } else {
                         console.log('%c Error: ', 'color:red;font-size:16px;', 'Error server.');
@@ -349,7 +374,8 @@ window.chartColors = {
 			// Get data from controller and pass to js variable.
             temperatures = {!! json_encode($temperatures->toArray()) !!};
             humidities = {!! json_encode($humidities->toArray()) !!};
-			co2s = {!! json_encode($carbonDioxides->toArray()) !!};
+	    co2s = {!! json_encode($carbonDioxides->toArray()) !!};
+	    monoxides = {!! json_encode($monoxides->toArray()) !!};
             createMainChart(); // Creating main chart.
 			/*document.getElementById("canvas").onclick = function(e) {
 				var activeElement = window.myLine.lastTooltipActive;
@@ -394,6 +420,12 @@ window.chartColors = {
 					backgroundColor: window.chartColors.green,
 					borderColor: window.chartColors.green,
 					data: getData('carbonDioxide'), // Change for dinamyc data.
+				}, {
+					label: 'Carbon Monoxide (ppm)',
+					fill: false,
+					backgroundColor: window.chartColors.red,
+					borderColor: window.chartColors.red,
+					data: getData('monoxide'), // Change for dinamyc data.
 				}]
 			},
 			options: {
@@ -440,6 +472,7 @@ window.chartColors = {
 											case 0: title = "°C"; break;
 											case 1: title = "% RH"; break;
 											case 2: title = "PPM"; break;
+											case 3: title = "PPM"; break;
 											default: title = "";
 										}
 										window.myLine.options.scales.yAxes[0].scaleLabel.labelString = title;
@@ -453,6 +486,7 @@ window.chartColors = {
 									case 0: title = "°C"; break;
 									case 1: title = "% RH"; break;
 									case 2: title = "PPM"; break;
+									case 3: title = "PPM"; break;
 									default: title = "";
 								}
 								window.myLine.options.scales.yAxes[0].scaleLabel.labelString = title;
@@ -485,6 +519,7 @@ window.chartColors = {
 					var temperature = response.data.temperatures.grade;
 					var humidity = response.data.humidities.grade;
 					var carbonDioxide = response.data.carbondioxides.grade;
+                                        var monoxide = response.data.monoxides.grade;
 					
 					// Gauges Graficas
 					for (var x = 0; x < elements.length; x++) {
@@ -511,6 +546,12 @@ window.chartColors = {
 									value = carbonDioxide;
 									ticks = [500, 400, 300, 200, 100, 0];
 									max = 500;
+									minorTicks = 10;
+									break;
+								case 4: 
+									value = monoxide;
+									ticks = [50, 30, 10, 8, 5, 0];
+									max = 50;
 									minorTicks = 10;
 									break;
 								default: 
@@ -542,7 +583,7 @@ window.chartColors = {
 							var chart = new google.visualization.Gauge(document.getElementById(elements[x].name));
 							chart.draw(data, options);
 						}
-				}
+					}
 				})
 				.catch(error => console.log(error));
 			}) 
@@ -566,8 +607,10 @@ window.chartColors = {
         } else if (data == "humidity") {
             var typeData = humidities;
         } else if (data == "carbonDioxide") {
-			var typeData = co2s;
-		}
+	    var typeData = co2s;
+        } else if (data == "monoxide") {
+	    var typeData = monoxides;
+	}
 
         var total = typeData.length;
         return [typeData[total-10].grade, typeData[total-9].grade, typeData[total-8].grade, typeData[total-7].grade, typeData[total-6].grade, typeData[total-5].grade, typeData[total-4].grade, typeData[total-3].grade, typeData[total-2].grade, typeData[total-1].grade];

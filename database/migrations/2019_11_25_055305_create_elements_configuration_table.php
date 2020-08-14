@@ -29,8 +29,9 @@ class CreateElementsConfigurationTable extends Migration
         $temperature = array("name" => "Temperature", "min" => "10", "max" => "30", "neutral" => "20", "unit" => "°C", "switched_on" => true);
         $humidity = array("name" => "Humidity", "min" => "20", "max" => "100", "neutral" => "40", "unit" => "RH %", "switched_on" => true);
         $carbonDioxide = array("name" => "CarbonDioxide", "min" => "150", "max" => "300", "neutral" => "300", "unit" => "ppm", "switched_on" => true);
+        $monoxide = array("name" => "Monoxide", "min" => "0", "max" => "100", "neutral" => "30", "unit" => "ppm", "switched_on" => true);
 
-        DB::table("elements_configuration")->insert(array ($temperature, $humidity, $carbonDioxide));
+        DB::table("elements_configuration")->insert(array ($temperature, $humidity, $carbonDioxide, $monoxide));
     }
 
     /**
