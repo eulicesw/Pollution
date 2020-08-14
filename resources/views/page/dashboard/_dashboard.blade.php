@@ -8,7 +8,7 @@
 </div>
 <div class="card m-4">
 	<div class="row">
-		<div class="col-xs-12 col-sm-7">
+		<div class="col-xs-12 col-sm-12 col-md-6 col-lg-7">
 			<div class="row">
 				<div class="col-xs-12 col-md-12 p-3">
 					<div class="d-flex justify-content-center">
@@ -24,7 +24,7 @@
 							</div>
 							<div class="dateupdate">
 								Updated on 
-								<span id="updated-day">Friday </span><b id="updated-time">08:00</b>.
+								<span id="updated-day">Friday </span><b id="updated-time">08:00</b>.	
 							</div>
 						</div>
 					</div>
@@ -34,33 +34,53 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-12 col-md-5 text-center" style="padding-top:15px;padding-bottom:10px;">
+		<div class="col-12 col-md-6 col-lg-5 text-center" style="padding-top:15px;padding-bottom:10px;">
 			<div class="row">
-				<div class="col-12 col-md-6">
+				<div class="col-xs-12 col-sm-6 col-md-6 text-center">
+					@if($elements_configuration[0]->switched_on)
 					<div>
-						<h5 class="title-chartstatus">Temperature</h5>
+						<h5 class="title-chartstatus">{{ $elements_configuration[0]->name }}</h5>
 						<div id="Temperature" style="width: 200px; height: 200px; margin: 0 auto;"></div>
 					</div>
+					@endif
+					@if(!$elements_configuration[0]->switched_on)
+						{{ $elements_configuration[0]->reason_disabled }}
+					@endif
 				</div>
-				<div class="col-12 col-md-6">
+				<div class="col-xs-12 col-sm-6 col-md-6">
+					@if($elements_configuration[1]->switched_on)
 					<div>
-						<h5 class="title-chartstatus">Humidity</h5>
+						<h5 class="title-chartstatus">{{ $elements_configuration[1]->name }}</h5>
 						<div id="Humidity" style="width: 200px; height: 200px; margin: 0 auto;"></div>
 					</div>
+					@endif
+					@if(!$elements_configuration[1]->switched_on)
+						{{ $elements_configuration[1]->reason_disabled }}
+					@endif
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-12 col-md-6">
+				<div class="col-xs-12 col-sm-6 col-md-6">
+					@if($elements_configuration[2]->switched_on)
 					<div>
-						<h5 class="title-chartstatus">CO2</h5>
+						<h5 class="title-chartstatus">{{ $elements_configuration[2]->name }}</h5>
 						<div id="CarbonDioxide" style="width: 200px; height: 200px; margin: 0 auto;"></div>
 					</div>
+					@endif
+					@if(!$elements_configuration[2]->switched_on)
+						{{ $elements_configuration[2]->reason_disabled }}
+					@endif
 				</div>
-				<div class="col-12 col-md-6">
+				<div class="col-xs-12 col-sm-6 col-md-6">
+					@if($elements_configuration[3]->switched_on)
 					<div>
-						<h5 class="title-chartstatus">Monoxide</h5>
+						<h5 class="title-chartstatus">{{ $elements_configuration[3]->name }}</h5>
 						<div id="Monoxide" style="width: 200px; height: 200px; margin: 0 auto;"></div>
 					</div>
+					@endif
+					@if(!$elements_configuration[3]->switched_on)
+						{{ $elements_configuration[3]->reason_disabled }}
+					@endif
 				</div>
 			</div>
 		</div>
@@ -309,7 +329,7 @@ window.chartColors = {
         	$('#headerInicio').css("min-height", "auto");
 		}
 		drawMainChart(false);
-		drawStatusCharts(false);
+		drawStatusCharts(true);
         setInterval(() => {
 			drawMainChart(true);
 			drawStatusCharts(true);
@@ -412,7 +432,7 @@ window.chartColors = {
 				responsive: true,
 				title: {
 					display: true,
-					text: ['Environmental Quality Index', 'current past 10 hours data']
+					text: 'Environmental Quality Index'// ['Environmental Quality Index', 'current past 10 hours data']
 				},
 				scales: {
 					yAxes: [{
@@ -503,66 +523,67 @@ window.chartColors = {
 					
 					// Gauges Graficas
 					for (var x = 0; x < elements.length; x++) {
-						var value;
-						// Ticks por grafica o secciones
-						var ticks;
-						var min = (elements[x].min < '0') ? elements[x].min - 10 : 0;
-						var max = getNearest(elements[x].max);
-                                                console.log(elements[x].name);
-						switch (elements[x].name) {
-							case 'Temperature': 
-								value = temperature;
-								ticks = [30, 25, 20, 15, 10, 5, 0];
-								max = 30;
-								minorTicks = 5;
-								break;
-							case 'Humidity': 
-								value = humidity;
-								ticks = [100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0];
-								max = 100;
-								minorTicks = 10;
-								break;
-							case 'CarbonDioxide': 
-								value = carbonDioxide;
-								ticks = [500, 400, 300, 200, 100, 0];
-								max = 500;
-								minorTicks = 10;
-								break;
-							case 'Monoxide': 
-								value = monoxide;
-								ticks = [50, 30, 10, 8, 5, 0];
-								max = 50;
-								minorTicks = 10;
-								break;
-							default: 
-								console.log('Error to find element.');
-						}
-						var data = google.visualization.arrayToDataTable([
-							['Label', 'Value'],
-							[elements[x].unit, parseInt(value)]
-						]);
-						var options = {
-							width: 200,
-							height: 200,
-							redFrom: max,
-							redTo: elements[x].max,
-							yellowFrom: elements[x].min,
-							yellowTo: min,
-							greenFrom: elements[x].max,
-							greenTo: elements[x].min,
-							// minorTicks: max,
-							max: min,
-							min: max,
-							majorTicks: ticks,
-							minorTicks: minorTicks,
-							animation : {
-								duration : 500,
-								easing : "in"
+						if (elements[x].switched_on) { // Verifica si se debe mostrar
+							var value;
+							// Ticks por grafica o secciones
+							var ticks;
+							var min = (elements[x].min < '0') ? elements[x].min - 10 : 0;
+							var max = getNearest(elements[x].max);
+							switch (elements[x].id) {
+								case 1: 
+									value = temperature;
+									ticks = [30, 25, 20, 15, 10, 5, 0];
+									max = 30;
+									minorTicks = 5;
+									break;
+								case 2: 
+									value = humidity;
+									ticks = [100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0];
+									max = 100;
+									minorTicks = 10;
+									break;
+								case 3: 
+									value = carbonDioxide;
+									ticks = [500, 400, 300, 200, 100, 0];
+									max = 500;
+									minorTicks = 10;
+									break;
+								case 4: 
+									value = monoxide;
+									ticks = [50, 30, 10, 8, 5, 0];
+									max = 50;
+									minorTicks = 10;
+									break;
+								default: 
+									console.log('Error to find element.');
 							}
-						};
-						var chart = new google.visualization.Gauge(document.getElementById(elements[x].name));
-						chart.draw(data, options);
-				}
+							var data = google.visualization.arrayToDataTable([
+								['Label', 'Value'],
+								[elements[x].unit, parseInt(value)]
+							]);
+							var options = {
+								width: 200,
+								height: 200,
+								redFrom: max,
+								redTo: elements[x].max,
+								yellowFrom: elements[x].min,
+								yellowTo: min,
+								greenFrom: elements[x].max,
+								greenTo: elements[x].min,
+								// minorTicks: max,
+								max: min,
+								min: max,
+								majorTicks: ticks,
+								minorTicks: minorTicks,
+								animation : {
+									duration : 500,
+									easing : "in"
+								}
+							};
+							var chart = new google.visualization.Gauge(document.getElementById(elements[x].name));
+							chart.draw(data, options);
+						}
+					}
 				})
 				.catch(error => console.log(error));
 			}) 
@@ -579,6 +600,7 @@ window.chartColors = {
 		temperatures[qty-1].hour];
     }
 
+	// By id
     function getData(data) {
     	if (data == "temperature") {
         	var typeData = temperatures;

@@ -174,7 +174,7 @@ return [
         // ACA\Providers\BroadcastServiceProvider::class,
         ACA\Providers\EventServiceProvider::class,
         ACA\Providers\RouteServiceProvider::class,
-
+        Salman\Mqtt\MqttServiceProvider::class,
     ],
 
     /*
@@ -225,7 +225,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
+        'Mqtt' => \Salman\Mqtt\Facades\Mqtt::class,
     ],
 
 ];

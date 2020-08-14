@@ -121,7 +121,7 @@
             <a href="#" class="boton boton-verde">Ver Todas</a>
         </div> -->
     </main>
-    <section class="contenedor seccion">
+    <!-- <section class="contenedor seccion">
         <div class="container">
                     <div class="heading-text heading-section text-center">
                         <h2>MEET OUR TEAM</h2>
@@ -188,36 +188,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!--<div class="col-lg-3">
-                            <div class="team-member">
-                                <div class="team-image">
-                                    <img src="/img/erikaCutted.jpg" alt="">
-                                </div>
-                                <div class="team-desc">
-                                    <h3>Erika Acosta</h3>
-                                    <span>Design</span>
-                                    <p>Energetic and joyful, determined to become independent. Loves Zumab and Spinning (IndBike).</p>
-                                    <div class="align-center">
-                                        <a target="_blank" href="https://www.facebook.com/erika.acosta.5832" class="btn btn-xs btn-slide btn-light">
-                                            <i class="fab fa-facebook-f"></i>
-                                            <span>Facebook</span>
-                                        </a>
-                                        <a href="#" class="btn btn-xs btn-slide btn-light" data-width="100">
-                                            <i class="fab fa-twitter"></i>
-                                            <span>Twitter</span>
-                                        </a>
-                                        <a href="#" class="btn btn-xs btn-slide btn-light" data-width="118">
-                                            <i class="fab fa-instagram"></i>
-                                            <span>Instagram</span>
-                                        </a>
-                                        <a href="#" class="btn btn-xs btn-slide btn-light" data-width="80">
-                                            <i class="far fa-envelope"></i>
-                                            <span>Mail</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>-->
                         <div class="col-lg-4">
                             <div class="team-member">
                                 <div class="team-image">
@@ -250,7 +220,7 @@
                         </div>
                     </div>
                 </div>
-    </section>
+    </section> -->
 <script type="text/javascript">
     $(document).ready(function() {
         $('a[href="/dashboard"]').removeClass("active");
