@@ -34,7 +34,9 @@
                         <div class="form-group row">
                             <label for="enable" class="col-4 col-sm-4 col-md-4 col-lg-3 col-form-label col-form-label-lg">Enable:</label>
                             <div class="col-8 col-sm-8 col-md-8 col-lg-9">
-                                <input id="enable_{{ $element->id }}"type="checkbox" @if($element->switched_on) checked @endif data-toggle="toggle" data-size="sm">
+                                <span class="check_4" >
+                                    <input id="enable_{{ $element->id }}"type="checkbox" @if($element->switched_on) checked @endif data-toggle="toggle" data-size="sm">
+                                </span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -85,13 +87,18 @@
 
         // called when a message arrives
         function onMessageArrived(message) {
+            // switch sensors checkboxes 
             console.log("onMessageArrived: " + message.payloadString);
-            // CHANGE SWITCH ON / OFF.
+            let newFlags = JSON.parse(message.payloadString);
+            $('#enable_1').prop('checked', newFlags['temperature'] == 1).change();
+            $('#enable_2').prop('checked', newFlags['humidity'] == 1).change();
+            $('#enable_3').prop('checked', newFlags['carbonDioxide'] == 1).change();
+            $('#enable_4').prop('checked', newFlags['monoxide'] == 1).change();
         }
     }
 
     $(document).ready(function() {
-        mqttConnect("utt/0317114967", "Hello from document ready");
+        mqttConnect("proyectoaca/ctrlDash", "Hello from document ready");
         $('a[href="/"]').removeClass("active");
         $('a[href="/dashboard"]').removeClass("active");
 		$('a[href="/admin/settings"]').addClass("active");
@@ -130,9 +137,6 @@
                 $('#button_' + id).html("Save");
                 if( xhr.status === 200 ) {
                     $('#element_title_' + id).html(element.name);
-                    $('#danger').hide(); 
-                    $('#success').show(); 
-                    $('#success').html("<strong> " + element.name + "</strong> data saved successfully");
                     // ADD HERE THE NEW SENSOR.
                     data = {
                         "temperature": ($('#enable_1').is(":checked")) ? 1 : 0,
@@ -140,7 +144,10 @@
                         "carbonDioxide": ($('#enable_3').is(":checked")) ? 1 : 0,
                         "monoxide": ($('#enable_4').is(":checked")) ? 1 : 0
                     }
-                    mqttConnect("utt/0317114967", JSON.stringify(data));
+                    mqttConnect("proyectoaca/ctrl", JSON.stringify(data));
+                    $('#danger').hide(); 
+                    $('#success').show(); 
+                    $('#success').html("<strong> " + element.name + "</strong> data saved successfully");
                 } else {
                     $('#success').hide(); 
                     $('#danger').show(); 
@@ -150,5 +157,6 @@
             }
         });
     }
+
 </script>
 @endsection
