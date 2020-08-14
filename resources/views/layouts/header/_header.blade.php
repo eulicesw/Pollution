@@ -11,6 +11,9 @@
         <nav id="navegacion" class="navegacion">
             <a href="/">Home</a>
             <a href="/dashboard">Dashboard</a>
+            @if ($user->hasRole('admin'))
+                <a href="/admin/settings">Settings</a>
+            @endif
             <a class="logout rounded" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 {{ __('Logout') }}
             </a>

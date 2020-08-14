@@ -3,11 +3,13 @@
 namespace ACA\Http\Controllers;
 
 use Log;
+use Auth;
 use Illuminate\Http\Request;
 use ACA\Models\Temperature;
 use ACA\Models\Humidity;
 use ACA\Models\CarbonDioxide;
 use ACA\Models\ElementConfiguration;
+
 
 class DashboardController extends Controller
 {
@@ -34,8 +36,9 @@ class DashboardController extends Controller
         $temperatures = Temperature::all();
         $humidities = Humidity::all();
         $elements_configuration = ElementConfiguration::all();
+        $user = Auth::user();
         $title = "ACA | Dashboard";
-        return view('page.dashboard._dashboard', compact('title', 'temperatures', 'humidities', 'carbonDioxides', 'elements_configuration'));
+        return view('page.dashboard._dashboard', compact('title', 'temperatures', 'humidities', 'carbonDioxides', 'elements_configuration', 'user'));
     }
 
     public function update() 

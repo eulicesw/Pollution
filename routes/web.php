@@ -22,3 +22,6 @@ Route::get('/datasensor/create', 'DataSensorController@insert');
 Auth::routes(['register' => true]); // Deactivate register view.
 
 Route::get('/home', 'Controller@index');
+
+Route::get('/admin/settings', 'AdminController@index');
+Route::post('admin/element/update', 'AdminController@update');
