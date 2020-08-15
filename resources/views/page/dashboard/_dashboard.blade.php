@@ -7,86 +7,84 @@
         <h2>Air Quality Index (AQI)</h2>
 </div>
 <div class="card m-4">
-        <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-7">
-                        <div class="row">
-                                <div class="col-xs-12 col-md-12 p-3">
-                                        <div class="d-flex justify-content-center">
-                                                <div id="airvalue-index" class="col-5 col-lg-3 col-xl-2 p-3 mb-2 bg-success text-white w-25 text-center display-1 rounded">
-                                                        23
-                                                        <a id="information-air" href="#" data-toggle="modal" data-target="#exampleModalCenter">
-                                                                <i  class="fas fa-info-circle icon-top" style="font-size:25px;"></i>
-                                                        </a>
-                                                </div>
-                                                <div class="ml-3">
-                                                        <div id="airvalue-text" class="airvalue-text text-success display-3">
-                                                                Good
-                                                        </div>
-                                                        <div class="dateupdate">
-                                                                Updated on 
-                                                                <span id="updated-day">Friday </span><b id="updated-time">08:00</b>.	
-                                                        </div>
-                                                </div>
-                                        </div>
-                                </div>
-                                <div class="col-12">
-                                        <canvas id="canvas"></canvas>
-                                </div>
-                        </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-5 text-center" style="padding-top:15px;padding-bottom:10px;">
-                        <div class="row" style="height: 40%">
-                                <div class="col-xs-12 col-sm-6 col-md-6 text-center" style="display: flex;align-items: center; justify-content: center;">
-                                        @if($elements_configuration[0]->switched_on)
-                                        <div>
-                                                <h5 class="title-chartstatus">{{ $elements_configuration[0]->name }}</h5>
-                                                <div id="Temperature" style="width: 200px; height: 200px; margin: 0 auto;"></div>
-                                        </div>
-                                        @endif
-                                        @if(!$elements_configuration[0]->switched_on)
-                                                <div> {{ $elements_configuration[0]->reason_disabled }} </div>
-                                        @endif
-                                </div>
-                                <div class="col-xs-12 col-sm-6 col-md-6" style="display: flex;align-items: center; justify-content: center;">
-                                        @if($elements_configuration[1]->switched_on)
-                                        <div>
-                                                <h5 class="title-chartstatus">{{ $elements_configuration[1]->name }}</h5>
-                                                <div id="Humidity" style="width: 200px; height: 200px; margin: 0 auto;"></div>
-                                        </div>
-                                        @endif
-                                        @if(!$elements_configuration[1]->switched_on)
-                                                <div> {{ $elements_configuration[1]->reason_disabled }} </div>
-                                        @endif
-                                </div>
-                        </div>
-                        <div class="row" style="height: 40%">
-                                <div class="col-xs-12 col-sm-6 col-md-6" style="display: flex;align-items: center; justify-content: center;">
-                                        @if($elements_configuration[2]->switched_on)
-                                        <div>
-                                                <h5 class="title-chartstatus">{{ $elements_configuration[2]->name }}</h5>
-                                                <div id="CarbonDioxide" style="width: 200px; height: 200px; margin: 0 auto;"></div>
-                                        </div>
-                                        @endif
-                                        @if(!$elements_configuration[2]->switched_on)
-                                                <div> {{ $elements_configuration[2]->reason_disabled }} </div>
-                                        @endif
-                                </div>
-                                <div class="col-xs-12 col-sm-6 col-md-6" style="display: flex; align-items: center; justify-content: center;">
-                                        @if($elements_configuration[3]->switched_on)
-                                        <div>
-                                                <h5 class="title-chartstatus">{{ $elements_configuration[3]->name }}</h5>
-                                                <div id="Monoxide" style="width: 200px; height: 200px; margin: 0 auto;"></div>
-                                        </div>
-                                        @endif
-                                        @if(!$elements_configuration[3]->switched_on)
-                                                <div>
-                                                <div style=""> {{ $elements_configuration[3]->reason_disabled }} </div>
-                                                </div>
-                                        @endif
-                                </div>
-                        </div>
-                </div>
-        </div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-12 col-md-6 col-lg-7">
+			<div class="row">
+				<div class="col-xs-12 col-md-12 p-3">
+					<div class="d-flex justify-content-center">
+						<div id="airvalue-index" class="col-5 col-lg-3 col-xl-2 p-3 mb-2 bg-success text-white w-25 text-center display-1 rounded">
+							23
+							<a id="information-air" href="#" data-toggle="modal" data-target="#exampleModalCenter">
+								<i  class="fas fa-info-circle icon-top" style="font-size:25px;"></i>
+							</a>
+						</div>
+						<div class="ml-3">
+							<div id="airvalue-text" class="airvalue-text text-success display-3">
+								Good
+							</div>
+							<div class="dateupdate">
+								Updated on 
+								<span id="updated-day">Friday </span><b id="updated-time">08:00</b>.	
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-12">
+					<canvas id="canvas"></canvas>
+				</div>
+			</div>
+		</div>
+		<div class="col-12 col-md-6 col-lg-5 text-center" style="padding-top:15px;padding-bottom:10px;">
+			<div class="row">
+				<div class="col-xs-12 col-sm-6 col-md-6 m-auto">
+					@if($elements_configuration[0]->switched_on)
+					<div>
+						<h5 class="title-chartstatus">{{ $elements_configuration[0]->name }}</h5>
+						<div id="Temperature" style="width: 200px; height: 200px; margin: 0 auto;"></div>
+					</div>
+					@endif
+					@if(!$elements_configuration[0]->switched_on)
+						<strong>{{ $elements_configuration[0]->reason_disabled }}</strong>
+					@endif
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-6 m-auto">
+					@if($elements_configuration[1]->switched_on)
+					<div>
+						<h5 class="title-chartstatus">{{ $elements_configuration[1]->name }}</h5>
+						<div id="Humidity" style="width: 200px; height: 200px; margin: 0 auto;"></div>
+					</div>
+					@endif
+					@if(!$elements_configuration[1]->switched_on)
+						<strong>{{ $elements_configuration[1]->reason_disabled }}</strong>
+					@endif
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-6 col-md-6 m-auto">
+					@if($elements_configuration[2]->switched_on)
+					<div>
+						<h5 class="title-chartstatus">{{ $elements_configuration[2]->name }}</h5>
+						<div id="CarbonDioxide" style="width: 200px; height: 200px; margin: 0 auto;"></div>
+					</div>
+					@endif
+					@if(!$elements_configuration[2]->switched_on)
+					<strong>{{ $elements_configuration[2]->reason_disabled }}</strong>
+					@endif
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-6 m-auto">
+					@if($elements_configuration[3]->switched_on)
+					<div>
+						<h5 class="title-chartstatus">{{ $elements_configuration[3]->name }}</h5>
+						<div id="Monoxide" style="width: 200px; height: 200px; margin: 0 auto;"></div>
+					</div>
+					@endif
+					@if(!$elements_configuration[3]->switched_on)
+						<strong>{{ $elements_configuration[3]->reason_disabled }}</strong>
+					@endif
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 <!-- Modal -->
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
