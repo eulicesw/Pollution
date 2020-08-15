@@ -36,7 +36,7 @@
 		</div>
 		<div class="col-12 col-md-6 col-lg-5 text-center" style="padding-top:15px;padding-bottom:10px;">
 			<div class="row">
-				<div class="col-xs-12 col-sm-6 col-md-6 text-center">
+				<div class="col-xs-12 col-sm-6 col-md-6 m-auto">
 					@if($elements_configuration[0]->switched_on)
 					<div>
 						<h5 class="title-chartstatus">{{ $elements_configuration[0]->name }}</h5>
@@ -44,10 +44,10 @@
 					</div>
 					@endif
 					@if(!$elements_configuration[0]->switched_on)
-						{{ $elements_configuration[0]->reason_disabled }}
+						<strong>{{ $elements_configuration[0]->reason_disabled }}</strong>
 					@endif
 				</div>
-				<div class="col-xs-12 col-sm-6 col-md-6">
+				<div class="col-xs-12 col-sm-6 col-md-6 m-auto">
 					@if($elements_configuration[1]->switched_on)
 					<div>
 						<h5 class="title-chartstatus">{{ $elements_configuration[1]->name }}</h5>
@@ -55,12 +55,12 @@
 					</div>
 					@endif
 					@if(!$elements_configuration[1]->switched_on)
-						{{ $elements_configuration[1]->reason_disabled }}
+						<strong>{{ $elements_configuration[1]->reason_disabled }}</strong>
 					@endif
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-xs-12 col-sm-6 col-md-6">
+				<div class="col-xs-12 col-sm-6 col-md-6 m-auto">
 					@if($elements_configuration[2]->switched_on)
 					<div>
 						<h5 class="title-chartstatus">{{ $elements_configuration[2]->name }}</h5>
@@ -68,10 +68,10 @@
 					</div>
 					@endif
 					@if(!$elements_configuration[2]->switched_on)
-						{{ $elements_configuration[2]->reason_disabled }}
+					<strong>{{ $elements_configuration[2]->reason_disabled }}</strong>
 					@endif
 				</div>
-				<div class="col-xs-12 col-sm-6 col-md-6">
+				<div class="col-xs-12 col-sm-6 col-md-6 m-auto">
 					@if($elements_configuration[3]->switched_on)
 					<div>
 						<h5 class="title-chartstatus">{{ $elements_configuration[3]->name }}</h5>
@@ -79,7 +79,7 @@
 					</div>
 					@endif
 					@if(!$elements_configuration[3]->switched_on)
-						{{ $elements_configuration[3]->reason_disabled }}
+						<strong>{{ $elements_configuration[3]->reason_disabled }}</strong>
 					@endif
 				</div>
 			</div>
