@@ -367,6 +367,8 @@ function drawMainChart(newRequest) {
                 window.myLine.data.datasets[2].data[9] = co2s.grade; // Actualiza el CO2.
                 window.myLine.data.datasets[3].data[9] = monoxides.grade; // Actualiza el Monoxido de carbono.
                 window.myLine.update();
+
+                updateTimeLabel();
             } else {
                 console.log('%c Error: ', 'color:red;font-size:16px;', 'Error server.');
             }
@@ -668,6 +670,23 @@ function getMaximum() {
 function getNearest(number) {
     // console.log(Math.ceil((number) / 10) * 10);
     return Math.ceil((number) / 10) * 10;
+}
+
+function updateTimeLabel() {
+    let days = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+    let todayDate = new Date();
+    let day = days[todayDate.getDay()];
+    
+    $('#updated-day').text(day + " ");
+
+    let hours = todayDate.getHours();
+    let minutes = todayDate.getMinutes();
+
+    if(hours < 10) hours = "0" + hours;
+    if(minutes < 10) minutes = "0" + minutes;
+
+    $('#updated-time').text(hours + ":" + minutes);
 }
 
 </script>
