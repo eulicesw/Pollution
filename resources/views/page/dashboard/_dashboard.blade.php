@@ -544,8 +544,8 @@ function drawStatusCharts(newRequest) {
                         break;
                     case 3: 
                         value = carbonDioxide;
-                        ticks = [500, 400, 300, 200, 100, 0];
-                        max = 500;
+                        ticks = [1000, 900, 800, 700, 600, 500, 400, 300, 200, 100, 0];
+                        max = 1000;
                         minorTicks = 10;
                         break;
                     case 4: 
