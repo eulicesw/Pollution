@@ -8,9 +8,9 @@
 </div>
 <div class="card m-4">
 	<div class="row">
-		<div class="col-xs-12 col-sm-12 col-md-6 col-lg-7">
+    <div class="col-12 text-center" style="padding-top:15px;padding-bottom:10px;">
 			<div class="row">
-				<div class="col-xs-12 col-md-12 p-3">
+                <!-- <div class="col-xs-12 col-md-3 p-3">
 					<div class="d-flex justify-content-center">
 						<div id="airvalue-index" class="col-5 col-lg-3 col-xl-2 p-3 mb-2 bg-success text-white w-25 text-center display-1 rounded">
 							23
@@ -28,59 +28,48 @@
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class="col-12">
-					<canvas id="canvas"></canvas>
-				</div>
+                </div> -->
+                
+                @foreach($elements_configuration as $element_configuration)
+                <div class="col-xs-12 col-sm-4 col-md-3 m-auto">
+                    @if($element_configuration->switched_on)
+                    <div>
+						<h5 class="title-chartstatus">{{ $element_configuration->name }}</h5>
+						<div id="{{ $element_configuration->name }}" style="width: 200px; height: 200px; margin: 0 auto;"></div>
+                    </div>
+                    @endif
+					@if(!$element_configuration->switched_on)
+						<strong>{{ $element_configuration->reason_disabled }}</strong>
+					@endif
+                </div>
+                @endforeach
 			</div>
 		</div>
-		<div class="col-12 col-md-6 col-lg-5 text-center" style="padding-top:15px;padding-bottom:10px;">
+		<div class="col-lg-12 col-xl-6">
 			<div class="row">
-				<div class="col-xs-12 col-sm-6 col-md-6 m-auto">
-					@if($elements_configuration[0]->switched_on)
-					<div>
-						<h5 class="title-chartstatus">{{ $elements_configuration[0]->name }}</h5>
-						<div id="Temperature" style="width: 200px; height: 200px; margin: 0 auto;"></div>
-					</div>
-					@endif
-					@if(!$elements_configuration[0]->switched_on)
-						<strong>{{ $elements_configuration[0]->reason_disabled }}</strong>
-					@endif
-				</div>
-				<div class="col-xs-12 col-sm-6 col-md-6 m-auto">
-					@if($elements_configuration[1]->switched_on)
-					<div>
-						<h5 class="title-chartstatus">{{ $elements_configuration[1]->name }}</h5>
-						<div id="Humidity" style="width: 200px; height: 200px; margin: 0 auto;"></div>
-					</div>
-					@endif
-					@if(!$elements_configuration[1]->switched_on)
-						<strong>{{ $elements_configuration[1]->reason_disabled }}</strong>
-					@endif
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-12 col-sm-6 col-md-6 m-auto">
-					@if($elements_configuration[2]->switched_on)
-					<div>
-						<h5 class="title-chartstatus">{{ $elements_configuration[2]->name }}</h5>
-						<div id="CarbonDioxide" style="width: 200px; height: 200px; margin: 0 auto;"></div>
-					</div>
-					@endif
-					@if(!$elements_configuration[2]->switched_on)
-					<strong>{{ $elements_configuration[2]->reason_disabled }}</strong>
-					@endif
-				</div>
-				<div class="col-xs-12 col-sm-6 col-md-6 m-auto">
-					@if($elements_configuration[3]->switched_on)
-					<div>
-						<h5 class="title-chartstatus">{{ $elements_configuration[3]->name }}</h5>
-						<div id="Monoxide" style="width: 200px; height: 200px; margin: 0 auto;"></div>
-					</div>
-					@endif
-					@if(!$elements_configuration[3]->switched_on)
-						<strong>{{ $elements_configuration[3]->reason_disabled }}</strong>
-					@endif
+				<div class="col-12 text-center">
+                    <form class="form-inline">
+                        <!-- <div class="form-group mx-sm-3 mb-2"> -->
+                            <label for="from_date" class="mr-sm-2">From: </label>
+                            <input type="date" class="form-control mr-2" id="from_date" required>
+                        <!-- </div> -->
+                        <!-- <div class="form-group mx-sm-3 mb-2"> -->
+                            <label for="to_date" class="mr-sm-2">To: </label>
+                            <input type="date" class="form-control mr-2" id="to_date" required>
+                        <!-- </div> -->
+                        <button type="submit" class="btn btn-secondary mb-2">Search</button>
+                    </form>
+
+                    <!-- <div class="form-group">
+                        <label for="unit"></label>
+                        <select class="form-control" name="unit" id="unit">
+                            <option value="hour">Hour</option>
+                            <option value="day" selected>Day</option>
+                            <option value="month">Month</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-secondary" id="update">update</button> -->
+					<canvas id="canvas"></canvas>
 				</div>
 			</div>
 		</div>
@@ -318,6 +307,7 @@ var monoxides;
 var co2s;
 var elements;
 $(document).ready(function() {
+    console.log("Estoy funcionando!!!");
     $('a[href="/"]').removeClass("active");
     $('a[href="/dashboard"]').addClass("active");
     $('#textHeader').html("");
@@ -331,7 +321,7 @@ $(document).ready(function() {
     drawMainChart(false);
     drawStatusCharts(true);
     setInterval(() => {
-    drawMainChart(true);
+    // drawMainChart(true);
     drawStatusCharts(true);
     }, 5000);
 });
@@ -339,45 +329,44 @@ $(document).ready(function() {
 function drawMainChart(newRequest) {
     if (newRequest) {
         $.ajax({
-        url: 'dashboard/update',
+            url: 'dashboard/update',
             type: 'GET',
             headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    },
-        data: null,
-        success: function(data, textStatus, xhr) {
-            if( xhr.status === 200 ) {
-                // Updating main chart.
-                temperatures = data.temperatures;
-                humidities = data.humidities;
-                co2s = data.carbondioxides;
-                monoxides = data.monoxides;
-                window.myLine.data.labels.splice(0, 1); // Remove first label.
-                window.myLine.data.datasets[0].data.splice(0, 1);
-                window.myLine.data.datasets[1].data.splice(0, 1);
-                window.myLine.data.datasets[2].data.splice(0, 1);
-                window.myLine.data.datasets[3].data.splice(0, 1);
-                // var totalTemp = temperatures.length;
-                // var totalHum = humidities.length;
-                window.myLine.data.labels.push(temperatures.hour); // Se actualiza la hora.
-                window.myLine.data.datasets[0].data[9] = temperatures.grade; // Actualiza los grados.
-                window.myLine.data.datasets[1].data[9] = humidities.grade; // Actualiza los grados.
-                window.myLine.data.datasets[2].data[9] = co2s.grade; // Actualiza el CO2.
-                window.myLine.data.datasets[3].data[9] = monoxides.grade; // Actualiza el Monoxido de carbono.
-                window.myLine.update();
-
-                updateTimeLabel();
-            } else {
-                console.log('%c Error: ', 'color:red;font-size:16px;', 'Error server.');
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: null,
+            success: function(data, textStatus, xhr) {
+                if( xhr.status === 200 ) {
+                    // Updating main chart.
+                    temperatures = data.temperatures;
+                    // humidities = data.humidities;
+                    // co2s = data.carbondioxides;
+                    // monoxides = data.monoxides;
+                    window.myLine.data.labels.splice(0, 1); // Remove first label.
+                    window.myLine.data.datasets[0].data.splice(0, 1);
+                    // window.myLine.data.datasets[1].data.splice(0, 1);
+                    // window.myLine.data.datasets[2].data.splice(0, 1);
+                    // window.myLine.data.datasets[3].data.splice(0, 1);
+                    // var totalTemp = temperatures.length;
+                    // var totalHum = humidities.length;
+                    window.myLine.data.labels.push(temperatures.hour); // Se actualiza la hora.
+                    window.myLine.data.datasets[0].data[9] = temperatures.grade; // Actualiza los grados.
+                    // window.myLine.data.datasets[1].data[9] = humidities.grade; // Actualiza los grados.
+                    // window.myLine.data.datasets[2].data[9] = co2s.grade; // Actualiza el CO2.
+                    // window.myLine.data.datasets[3].data[9] = monoxides.grade; // Actualiza el Monoxido de carbono.
+                    window.myLine.update();
+                    updateTimeLabel();
+                } else {
+                    console.log('%c Error: ', 'color:red;font-size:16px;', 'Error server.');
+                }
             }
-        }
-    });
+        });
     } else {
         // Get data from controller and pass to js variable.
         temperatures = {!! json_encode($temperatures->toArray()) !!};
-        humidities = {!! json_encode($humidities->toArray()) !!};
-        co2s = {!! json_encode($carbonDioxides->toArray()) !!};
-        monoxides = {!! json_encode($monoxides->toArray()) !!};
+        // humidities = {!! json_encode($humidities->toArray()) !!};
+        // co2s = {!! json_encode($carbonDioxides->toArray()) !!};
+        // monoxides = {!! json_encode($monoxides->toArray()) !!};
         createMainChart(); // Creating main chart.
                         /*document.getElementById("canvas").onclick = function(e) {
                             var activeElement = window.myLine.lastTooltipActive;
@@ -401,107 +390,137 @@ function drawMainChart(newRequest) {
     // Creating main chart.
     function createMainChart() {
         var config = {
-        type: 'line',
+            type: 'line',
             data: {
-            labels: getLabels(),
-                datasets: [{
-                label: 'Temperature (°C)',
+                labels: getLabels(),
+                datasets: [
+                {
+                    label: 'Temperature (°C)',
                     backgroundColor: window.chartColors.orange,
                     borderColor: window.chartColors.orange,
                     data: getData('temperature'), // Function get grades from the type of enviorment.
                     fill: false,
-    }, {
-    label: 'Humidity (% RH)',
-        fill: false,
-        backgroundColor: window.chartColors.blue,
-        borderColor: window.chartColors.blue,
-        data: getData('humidity'), // Function get grades from the type of enviorment.
-    }, {
-    label: 'Carbon Dioxide (ppm)',
-        fill: false,
-        backgroundColor: window.chartColors.green,
-        borderColor: window.chartColors.green,
-        data: getData('carbonDioxide'), // Change for dinamyc data.
-    }, {
-    label: 'Carbon Monoxide (ppm)',
-        fill: false,
-        backgroundColor: window.chartColors.red,
-        borderColor: window.chartColors.red,
-        data: getData('monoxide'), // Change for dinamyc data.
-    }]
-    },
-        options: {
-        responsive: true,
-            title: {
-            display: true,
-                text: 'Environmental Quality Index'// ['Environmental Quality Index', 'current past 10 hours data']
-    },
-        scales: {
-        yAxes: [{
-        ticks: {
-        // the data minimum used for determining the ticks is Math.min(dataMin, suggestedMin)
-        suggestedMin: getMinimum(), // Get the minimum grade.
-            // the data maximum used for determining the ticks is Math.max(dataMax, suggestedMax)
-            suggestedMax: getMaximum() // Get the miximum grade.
-    },
-        scaleLabel: {
-        display: true
-            // labelString: 'Grades' // To show name of left side main chart.
-    }
-    }],
-        xAxes: [{
-        scaleLabel: {
-        display: true,
-            labelString: 'Time'
-    }
-    }]
-    },
-        legend: { // Logica para cambiar el labelString de mainChart, como le hice, no se, pero ya funciona xd.
-        onClick: function(e, legendItem) {
-            var index = legendItem.datasetIndex;
-            var ci = this.chart;
-            var alreadyHidden = (ci.getDatasetMeta(index).hidden === null) ? false : ci.getDatasetMeta(index).hidden;
-            ci.data.datasets.forEach(function(e, i) {
-                var title = "";
-                var meta = ci.getDatasetMeta(i);
-                if (i !== index) {
-                    if (!alreadyHidden) {
-                        meta.hidden = meta.hidden === null ? !meta.hidden : null;
-                        if (meta.hidden === null) {
-                            window.myLine.options.scales.yAxes[0].scaleLabel.labelString = title;
-                        } else if (meta.hidden === false) {
-                            switch (i) {
-                            case 0: title = "°C"; break;
-                            case 1: title = "% RH"; break;
-                            case 2: title = "PPM"; break;
-                            case 3: title = "PPM"; break;
-                            default: title = "";
-                            }
-                            window.myLine.options.scales.yAxes[0].scaleLabel.labelString = title;
+                }//, 
+                // {
+                //     label: 'Humidity (% RH)',
+                //     fill: false,
+                //     backgroundColor: window.chartColors.blue,
+                //     borderColor: window.chartColors.blue,
+                //     data: getData('humidity'), // Function get grades from the type of enviorment.
+                // }, 
+                // {
+                //     label: 'Carbon Dioxide (ppm)',
+                //     fill: false,
+                //     backgroundColor: window.chartColors.green,
+                //     borderColor: window.chartColors.green,
+                //     data: getData('carbonDioxide'), // Change for dinamyc data.
+                // }, 
+                // {
+                //     label: 'Carbon Monoxide (ppm)',
+                //     fill: false,
+                //     backgroundColor: window.chartColors.red,
+                //     borderColor: window.chartColors.red,
+                //     data: getData('monoxide'), // Change for dinamyc data.
+                // }
+                ]
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Environmental Quality Index'// ['Environmental Quality Index', 'current past 10 hours data']
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            // the data minimum used for determining the ticks is Math.min(dataMin, suggestedMin)
+                            suggestedMin: getMinimum(), // Get the minimum grade.
+                            // the data maximum used for determining the ticks is Math.max(dataMax, suggestedMax)
+                            suggestedMax: getMaximum() // Get the miximum grade.
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: '°C' // To show name of left side main chart.
                         }
-                    } else if (meta.hidden === null) {
-                        meta.hidden = true;
+                    }],
+                    xAxes: [{
+                        // scaleLabel: {
+                        //     display: true,
+                        //     labelString: 'Time',
+                        //     // New
+                        //     type: 'time',
+                        //     distribution: 'series',
+						//     offset: true,
+                        //     ticks: {
+                        //         major: {
+                        //             enabled: true,
+                        //             fontStyle: 'bold'
+                        //         },
+                        //         source: 'data',
+                        //         autoSkip: true,
+                        //         autoSkipPadding: 75,
+                        //         maxRotation: 0,
+                        //         sampleSize: 100
+                        //     },
+                        // }
+                        type: "time",
+                        time: {
+                            unit: 'hour',
+                            unitStepSize: 1,
+                            round: 'hour',
+                            tooltipFormat: "h:mm:ss a",
+                            displayFormats: {
+                            hour: 'MMM D, h:mm A'
+                            }
+                        }
+                    }]
+                },
+                legend: { // Logica para cambiar el labelString de mainChart, como le hice, no se, pero ya funciona xd.
+                    // onClick: function(e, legendItem) {
+                    //     var index = legendItem.datasetIndex;
+                    //     var ci = this.chart;
+                    //     var alreadyHidden = (ci.getDatasetMeta(index).hidden === null) ? false : ci.getDatasetMeta(index).hidden;
+                    //     ci.data.datasets.forEach(function(e, i) {
+                    //         var title = "";
+                    //         var meta = ci.getDatasetMeta(i);
+                    //         if (i !== index) {
+                    //             if (!alreadyHidden) {
+                    //                 meta.hidden = meta.hidden === null ? !meta.hidden : null;
+                    //                 if (meta.hidden === null) {
+                    //                     window.myLine.options.scales.yAxes[0].scaleLabel.labelString = title;
+                    //                 } else if (meta.hidden === false) {
+                    //                     switch (i) {
+                    //                         case 0: title = "°C"; break;
+                    //                         case 1: title = "% RH"; break;
+                    //                         case 2: title = "PPM"; break;
+                    //                         case 3: title = "PPM"; break;
+                    //                         default: title = "";
+                    //                     }
+                    //                     window.myLine.options.scales.yAxes[0].scaleLabel.labelString = title;
+                    //                 }
+                    //             } else if (meta.hidden === null) {
+                    //                 meta.hidden = true;
+                    //             }
+                    //         } else if (i === index) {
+                    //             meta.hidden = null;
+                    //             switch (i) {
+                    //                 case 0: title = "°C"; break;
+                    //                 case 1: title = "% RH"; break;
+                    //                 case 2: title = "PPM"; break;
+                    //                 case 3: title = "PPM"; break;
+                    //                 default: title = "";
+                    //             }
+                    //             window.myLine.options.scales.yAxes[0].scaleLabel.labelString = title;
+                    //         }
+                    //     });
+                    //     ci.update();
+                    // },
+                    onHover: function(event, legendItem) {
+                        document.getElementById("canvas").style.cursor = 'pointer';
                     }
-                } else if (i === index) {
-                    meta.hidden = null;
-                    switch (i) {
-                    case 0: title = "°C"; break;
-                    case 1: title = "% RH"; break;
-                    case 2: title = "PPM"; break;
-                    case 3: title = "PPM"; break;
-                    default: title = "";
-                    }
-                    window.myLine.options.scales.yAxes[0].scaleLabel.labelString = title;
                 }
-            });
-            ci.update();
-        },
-            onHover: function(event, legendItem) {
-                document.getElementById("canvas").style.cursor = 'pointer';
             }
-    }
-    }
-    };
+        };
         window.onload = function() {
             var ctx = document.getElementById('canvas').getContext('2d');
             window.myLine = new Chart(ctx, config);
@@ -519,9 +538,9 @@ function drawStatusCharts(newRequest) {
             .then(response => {
 
             var temperature = response.data.temperatures.grade;
-            var humidity = response.data.humidities.grade;
-            var carbonDioxide = response.data.carbondioxides.grade;
-            var monoxide = response.data.monoxides.grade;
+            // var humidity = response.data.humidities.grade;
+            // var carbonDioxide = response.data.carbondioxides.grade;
+            // var monoxide = response.data.monoxides.grade;
 
             // Gauges Graficas
             for (var x = 0; x < elements.length; x++) {
@@ -539,23 +558,23 @@ function drawStatusCharts(newRequest) {
                         minorTicks = 5;
                         break;
                     case 2: 
-                        value = humidity;
-                        ticks = [100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0];
-                        max = 100;
-                        minorTicks = 10;
-                        break;
+                        // value = humidity;
+                        // ticks = [100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0];
+                        // max = 100;
+                        // minorTicks = 10;
+                        // break;
                     case 3: 
-                        value = carbonDioxide;
-                        ticks = [1000, 900, 800, 700, 600, 500, 400, 300, 200, 100, 0];
-                        max = 1000;
-                        minorTicks = 10;
-                        break;
+                        // value = carbonDioxide;
+                        // ticks = [1000, 900, 800, 700, 600, 500, 400, 300, 200, 100, 0];
+                        // max = 1000;
+                        // minorTicks = 10;
+                        // break;
                     case 4: 
-                        value = monoxide;
-                        ticks = [50, 30, 10, 8, 5, 0];
-                        max = 50;
-                        minorTicks = 10;
-                        break;
+                        // value = monoxide;
+                        // ticks = [50, 30, 10, 8, 5, 0];
+                        // max = 50;
+                        // minorTicks = 10;
+                        // break;
                     default: 
                         console.log('Error to find element.');
                     }
@@ -594,12 +613,18 @@ function drawStatusCharts(newRequest) {
 }
 
 function getLabels() {
-    var qty = temperatures.length; 
-    // BUG: If the data is less than 10, make an error.
-    return [temperatures[qty-10].hour, temperatures[qty-9].hour, temperatures[qty-8].hour, 
-        temperatures[qty-7].hour, temperatures[qty-6].hour, temperatures[qty-5].hour, 
-        temperatures[qty-4].hour, temperatures[qty-3].hour, temperatures[qty-2].hour, 
-        temperatures[qty-1].hour];
+    var hours = new Array();
+    var date = new Date();
+    // date = date.setDate(date.getDate() - 1);
+    // date = date.setHours(date.getHours() + 1);
+    // console.log("Date: " + date);
+    console.log("Estoy funcionando!!!");
+    for (var i = 1; date.getHours() > 0; date.setHours(date.getHours() - i)) {
+        hours.push(moment(date).format('YYYY-MM-DD HH:mm:ss'));
+        console.log("array date: " + hours);
+    }
+    console.log("Actual array date: " + hours);
+    return hours;
 }
 
 // By id
@@ -629,15 +654,16 @@ function getMinimum() {
             minimum = temperatures[total + index].grade;
         }
     }
-    var total = humidities.length;
-    var index = 0;
-    // For humidities.
-    for (var x = 0;x < 10; x++) {
-        index = index - 1;
-        if (humidities[total + index].grade < minimum) {
-            minimum = humidities[total + index].grade;
-        }
-    }
+    // var total = humidities.length;
+    // var index = 0;
+    // // For humidities.
+    // for (var x = 0;x < 10; x++) {
+    //     index = index - 1;
+    //     if (humidities[total + index].grade < minimum) {
+    //         minimum = humidities[total + index].grade;
+    //     }
+    // }
+    console.log('%c Info min: ', 'color:green;font-size:16px;', minimum);
     return minimum;
 }
 
@@ -652,15 +678,16 @@ function getMaximum() {
             maximum = temperatures[total + index].grade;
         }
     }
-    var total = humidities.length;
-    var index = 0;
-    // For humidities.
-    for (var x = 0;x < 10; x++) {
-        index = index - 1;
-        if (humidities[total + index].grade > maximum) {
-            maximum = humidities[total + index].grade;
-        }
-    }
+    // var total = humidities.length;
+    // var index = 0;
+    // // For humidities.
+    // for (var x = 0;x < 10; x++) {
+    //     index = index - 1;
+    //     if (humidities[total + index].grade > maximum) {
+    //         maximum = humidities[total + index].grade;
+    //     }
+    // }
+    console.log('%c Info max: ', 'color:green;font-size:16px;', maximum);
     return maximum;
 }
 

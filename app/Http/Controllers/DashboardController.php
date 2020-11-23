@@ -32,14 +32,20 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        // Get data from today.
+        $from = date("Y-m-d");
+        $to = date("Y-m-d H:i:s");
         // Send data to page.
-        $carbonDioxides = CarbonDioxide::all();
-        $temperatures = Temperature::all();
-        $humidities = Humidity::all();
-        $monoxides = Monoxide::all();
+        $carbonDioxides = CarbonDioxide::whereBetween('hour', [$from, $to])->get();
+        $temperatures = Temperature::whereBetween('hour', [$from, $to])->get();
+        $humidities = Humidity::whereBetween('hour', [$from, $to])->get();
+        $monoxides = Monoxide::whereBetween('hour', [$from, $to])->get();
         $elements_configuration = ElementConfiguration::all();
         $user = Auth::user();
         $title = "ACA | Dashboard";
+        // Log::info($from);
+        // Log::info($to);
+        Log::info($temperatures);
         return view('page.dashboard._dashboard', compact('title', 'temperatures', 'humidities', 'carbonDioxides', 'monoxides', 'elements_configuration', 'user'));
     }
 
