@@ -761,7 +761,7 @@ i:not(.fa):not(.fab):not(.far):not(.fas) {
     border-color: #2250fc;
     border-width: 1px; */
     border-style: solid;
-    color: #fff;
+    /* color: #fff; */
     -webkit-transition: all .3s;
     -moz-transition: all .3s;
     transition: all .3s;
@@ -806,8 +806,8 @@ i:not(.fa):not(.fab):not(.far):not(.fas) {
 }
 
 .btn:focus,.btn:hover,.btn:not(:disabled):not(.disabled).active,.btn:not(:disabled):not(.disabled):active,a.btn:not([href]):not([tabindex]):focus,a.btn:not([href]):not([tabindex]):hover,a.btn:not([href]):not([tabindex]):not(:disabled):not(.disabled).active,a.btn:not([href]):not([tabindex]):not(:disabled):not(.disabled):active {
-    background-color: #0333e8;
-    border-color: #0333e8;
+    /* background-color: #0333e8; */
+    /* border-color: #0333e8; */
     color: #fff
 }
 

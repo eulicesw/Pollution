@@ -38,6 +38,7 @@ class DashboardController extends Controller
         // Send data to page.
         $carbonDioxides = CarbonDioxide::whereBetween('hour', [$from, $to])->get();
         $temperatures = Temperature::whereBetween('hour', [$from, $to])->get();
+        // $temperatures = Temperature::all();
         $humidities = Humidity::whereBetween('hour', [$from, $to])->get();
         $monoxides = Monoxide::whereBetween('hour', [$from, $to])->get();
         $elements_configuration = ElementConfiguration::all();

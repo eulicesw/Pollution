@@ -8,28 +8,8 @@
 </div>
 <div class="card m-4">
 	<div class="row">
-    <div class="col-12 text-center" style="padding-top:15px;padding-bottom:10px;">
+    <div class="col-12 text-center" style="padding-top:15px;padding-bottom:30px;">
 			<div class="row">
-                <!-- <div class="col-xs-12 col-md-3 p-3">
-					<div class="d-flex justify-content-center">
-						<div id="airvalue-index" class="col-5 col-lg-3 col-xl-2 p-3 mb-2 bg-success text-white w-25 text-center display-1 rounded">
-							23
-							<a id="information-air" href="#" data-toggle="modal" data-target="#exampleModalCenter">
-								<i  class="fas fa-info-circle icon-top" style="font-size:25px;"></i>
-							</a>
-						</div>
-						<div class="ml-3">
-							<div id="airvalue-text" class="airvalue-text text-success display-3">
-								Good
-							</div>
-							<div class="dateupdate">
-								Updated on 
-								<span id="updated-day">Friday </span><b id="updated-time">08:00</b>.	
-							</div>
-						</div>
-					</div>
-                </div> -->
-                
                 @foreach($elements_configuration as $element_configuration)
                 <div class="col-xs-12 col-sm-4 col-md-3 m-auto">
                     @if($element_configuration->switched_on)
@@ -48,27 +28,13 @@
 		<div class="col-lg-12 col-xl-6">
 			<div class="row">
 				<div class="col-12 text-center">
-                    <form class="form-inline">
-                        <!-- <div class="form-group mx-sm-3 mb-2"> -->
+                    <form class="form-inline justify-content-center">
                             <label for="from_date" class="mr-sm-2">From: </label>
-                            <input type="date" class="form-control mr-2" id="from_date" required>
-                        <!-- </div> -->
-                        <!-- <div class="form-group mx-sm-3 mb-2"> -->
+                            <input type="date" class="form-control mr-2" id="from_date" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d', strtotime('-2 week', strtotime(date('Y-m-d')))) }}" max="{{ date('Y-m-d') }}" required>
                             <label for="to_date" class="mr-sm-2">To: </label>
-                            <input type="date" class="form-control mr-2" id="to_date" required>
-                        <!-- </div> -->
-                        <button type="submit" class="btn btn-secondary mb-2">Search</button>
+                            <input type="date" class="form-control mr-4" id="to_date" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d', strtotime('-2 week', strtotime(date('Y-m-d')))) }}" max="{{ date('Y-m-d') }}" required>
+                        <button type="button" class="btn btn btn-outline-secondary btn-sm mb-2">Search</button>
                     </form>
-
-                    <!-- <div class="form-group">
-                        <label for="unit"></label>
-                        <select class="form-control" name="unit" id="unit">
-                            <option value="hour">Hour</option>
-                            <option value="day" selected>Day</option>
-                            <option value="month">Month</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-secondary" id="update">update</button> -->
 					<canvas id="canvas"></canvas>
 				</div>
 			</div>
@@ -307,7 +273,6 @@ var monoxides;
 var co2s;
 var elements;
 $(document).ready(function() {
-    console.log("Estoy funcionando!!!");
     $('a[href="/"]').removeClass("active");
     $('a[href="/dashboard"]').addClass("active");
     $('#textHeader').html("");
@@ -467,12 +432,32 @@ function drawMainChart(newRequest) {
                         time: {
                             unit: 'hour',
                             unitStepSize: 1,
-                            round: 'hour',
+                            round: 'minute',
                             tooltipFormat: "h:mm:ss a",
                             displayFormats: {
-                            hour: 'MMM D, h:mm A'
+                                hour: 'MMM D, h:mm A'
                             }
+                        },
+                        // De aqui agregue //
+                        distribution: 'linear', // 'linear'
+                        ticks: {
+							major: {
+								enabled: true,
+								fontStyle: 'bold'
+							},
+                            // Cuanda la hora sea menor a la 12:30am, utilizar 'data'.
+                            // Si es mayor, utilizar 'auto'.
+							source: 'auto', 
+							autoSkip: true,
+							autoSkipPadding: 75,
+							maxRotation: 0,
+							sampleSize: 100
+						},
+                        afterBuildTicks: function (scale, ticks) {
+                            console.log('%c Info ticks: ', 'color:green;font-size:16px', ticks);
+                            console.log('%c Info scale: ', 'color:green;font-size:16px', scale);
                         }
+                        // Hasta aqui //
                     }]
                 },
                 legend: { // Logica para cambiar el labelString de mainChart, como le hice, no se, pero ya funciona xd.
@@ -517,7 +502,25 @@ function drawMainChart(newRequest) {
                     // },
                     onHover: function(event, legendItem) {
                         document.getElementById("canvas").style.cursor = 'pointer';
-                    }
+                    },
+                    // Desde aqui agregue //
+                    // tooltips: {
+                    //     intersect: false,
+                    //     mode: 'index',
+                    //     callbacks: {
+                    //         label: function(tooltipItem, myData) {
+                    //             console.log('%c myData: ', 'color:green;font-size:16px', myData);
+                    //             console.log('%c tooltipItem: ', 'color:green;font-size:16px', tooltipItem);
+                    //             var label = myData.datasets[tooltipItem.datasetIndex].label || '';
+                    //             if (label) {
+                    //                 label += ': ';
+                    //             }
+                    //             label += parseFloat(tooltipItem.value).toFixed(2);
+                    //             return label;
+                    //         }
+                    //     }
+                    // }
+                    // Hasta aqui //
                 }
             }
         };
@@ -615,16 +618,31 @@ function drawStatusCharts(newRequest) {
 function getLabels() {
     var hours = new Array();
     var date = new Date();
-    // date = date.setDate(date.getDate() - 1);
-    // date = date.setHours(date.getHours() + 1);
-    // console.log("Date: " + date);
-    console.log("Estoy funcionando!!!");
-    for (var i = 1; date.getHours() > 0; date.setHours(date.getHours() - i)) {
-        hours.push(moment(date).format('YYYY-MM-DD HH:mm:ss'));
-        console.log("array date: " + hours);
+    for (var i = 1; date.getHours() >= 1; date.setHours(date.getHours() - i)) {
+        var ajam = date;
+        hours.push(moment(ajam).format('YYYY-MM-DD HH:mm:ss'));
+        if (ajam.getHours() == 1) {
+            ajam.setHours(0);
+            ajam.setMinutes(30);
+            console.log(ajam);
+            console.log("Actual array date: " + hours);
+            hours.push(moment(ajam).format('YYYY-MM-DD HH:mm:ss'));
+            return hours;
+        }
     }
-    console.log("Actual array date: " + hours);
-    return hours;
+
+    // var qty = temperatures.length; 
+    // // BUG: If the data is less than 10, make an error.
+    // return [temperatures[qty-10].hour, temperatures[qty-9].hour, temperatures[qty-8].hour, 
+    //     temperatures[qty-7].hour, temperatures[qty-6].hour, temperatures[qty-5].hour, 
+    //     temperatures[qty-4].hour, temperatures[qty-3].hour, temperatures[qty-2].hour, 
+    //     temperatures[qty-1].hour];
+
+    //Esto me trae la informacion de cada hora.
+    // console.log(temperatures);
+    // var time = new Array();
+    // temperatures.forEach(data => time.push(data.hour));
+    // return time;
 }
 
 // By id
@@ -638,9 +656,16 @@ function getData(data) {
     } else if (data == "monoxide") {
         var typeData = monoxides;
     }
+    // var total = typeData.length;
+    // // console.log(typeData);
+    // return [typeData[total-10].grade, typeData[total-9].grade, typeData[total-8].grade, typeData[total-7].grade, typeData[total-6].grade, typeData[total-5].grade, typeData[total-4].grade, typeData[total-3].grade, typeData[total-2].grade, typeData[total-1].grade];
 
-    var total = typeData.length;
-    return [typeData[total-10].grade, typeData[total-9].grade, typeData[total-8].grade, typeData[total-7].grade, typeData[total-6].grade, typeData[total-5].grade, typeData[total-4].grade, typeData[total-3].grade, typeData[total-2].grade, typeData[total-1].grade];
+
+
+
+    var grades = [];
+    typeData.forEach(element => grades.push({t: element.hour, y: element.grade}));
+    return grades;
 }
 
 function getMinimum() {
@@ -712,6 +737,10 @@ function updateTimeLabel() {
     if(minutes < 10) minutes = "0" + minutes;
 
     $('#updated-time').text(hours + ":" + minutes);
+}
+
+function getDate() {
+    return new Date();
 }
 
 </script>
