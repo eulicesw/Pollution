@@ -9,6 +9,8 @@ use ACA\Models\Temperature;
 use ACA\Models\Humidity;
 use ACA\Models\CarbonDioxide;
 use ACA\Models\Monoxide;
+use ACA\Models\Nitrogens;
+use ACA\Models\Ozones;
 use ACA\Models\ElementConfiguration;
 
 
@@ -41,13 +43,15 @@ class DashboardController extends Controller
         // $temperatures = Temperature::all();
         $humidities = Humidity::whereBetween('hour', [$from, $to])->get();
         $monoxides = Monoxide::whereBetween('hour', [$from, $to])->get();
+        $nitrogens = Nitrogens::whereBetween('hour', [$from, $to])->get();
+        $ozones = Ozones::whereBetween('hour', [$from, $to])->get();
         $elements_configuration = ElementConfiguration::all();
         $user = Auth::user();
         $title = "ACA | Dashboard";
         // Log::info($from);
         // Log::info($to);
         Log::info($temperatures);
-        return view('page.dashboard._dashboard', compact('title', 'temperatures', 'humidities', 'carbonDioxides', 'monoxides', 'elements_configuration', 'user'));
+        return view('page.dashboard._dashboard', compact('title', 'temperatures', 'humidities', 'carbonDioxides', 'monoxides', 'nitrogens', 'ozones', 'elements_configuration', 'user'));
     }
 
     public function update() 
@@ -56,12 +60,16 @@ class DashboardController extends Controller
         $temperatures = Temperature::latest()->first();
         $humidities = Humidity::latest()->first();
         $monoxides = Monoxide::latest()->first();
+        $nitrogens = Nitrogens::latest()->first();
+        $ozones = Ozones::latest()->first();
         return response()->json([
             'state' => 'updated',
             'temperatures' => $temperatures,
             'humidities' => $humidities,
             'carbondioxides' => $carbonDioxides,
             'monoxides' => $monoxides,
+            'nitrogens' => $nitrogens,
+            'ozones' => $ozones,
         ], 200);
     }
 }
