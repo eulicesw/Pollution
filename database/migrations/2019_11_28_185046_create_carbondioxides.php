@@ -16,7 +16,7 @@ class CreateCarbondioxides extends Migration
         Schema::create('carbondioxides', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('grade', 30);
-            $table->time('hour');
+            $table->timestamp('hour');
             $table->timestamps();
             $table->softDeletes();
         });

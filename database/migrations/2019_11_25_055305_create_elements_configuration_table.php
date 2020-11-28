@@ -21,15 +21,16 @@ class CreateElementsConfigurationTable extends Migration
             $table->string('neutral', 10);
             $table->string('unit', 10);
             $table->boolean('switched_on')->default(true);
+            $table->string('colour', 50);
             $table->string('reason_disabled', 250)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
 
-        $temperature = array("name" => "Temperature", "min" => "10", "max" => "30", "neutral" => "20", "unit" => "°C", "switched_on" => true);
-        $humidity = array("name" => "Humidity", "min" => "20", "max" => "100", "neutral" => "40", "unit" => "RH %", "switched_on" => true);
-        $carbonDioxide = array("name" => "CarbonDioxide", "min" => "150", "max" => "300", "neutral" => "300", "unit" => "ppm", "switched_on" => true);
-        $monoxide = array("name" => "Monoxide", "min" => "0", "max" => "50", "neutral" => "10", "unit" => "ppm", "switched_on" => true);
+        $temperature = array("name" => "Temperature", "min" => "10", "max" => "30", "neutral" => "20", "unit" => "°C", "switched_on" => true, "colour" => "rgb(255, 159, 64)");
+        $humidity = array("name" => "Humidity", "min" => "20", "max" => "100", "neutral" => "40", "unit" => "RH %", "switched_on" => true, "colour" => "rgb(54, 162, 235)");
+        $carbonDioxide = array("name" => "CarbonDioxide", "min" => "150", "max" => "300", "neutral" => "300", "unit" => "ppm", "switched_on" => true, "colour" => "rgb(75, 192, 192)");
+        $monoxide = array("name" => "Monoxide", "min" => "0", "max" => "50", "neutral" => "10", "unit" => "ppm", "switched_on" => true, "colour" => "rgb(255, 99, 132)");
 
         DB::table("elements_configuration")->insert(array ($temperature, $humidity, $carbonDioxide, $monoxide));
     }

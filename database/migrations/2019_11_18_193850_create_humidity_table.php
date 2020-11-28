@@ -16,7 +16,7 @@ class CreateHumidityTable extends Migration
         Schema::create('humidities', function (Blueprint $table) {
             $table->increments('id');
             $table->string('grade', 30);
-            $table->time('hour');
+            $table->timestamp('hour');
             $table->timestamps();
             $table->softDeletes();
         });

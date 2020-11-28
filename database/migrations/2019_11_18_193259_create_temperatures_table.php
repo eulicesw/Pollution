@@ -16,7 +16,7 @@ class CreateTemperaturesTable extends Migration
         Schema::create('temperatures', function (Blueprint $table) {
             $table->increments('id');
             $table->string('grade', 30);
-            $table->time('hour');
+            $table->timestamp('hour');
             $table->timestamps();
             $table->softDeletes();
         });

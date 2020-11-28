@@ -12,7 +12,7 @@ use ACA\Models\Monoxide;
 use ACA\Models\Nitrogens;
 use ACA\Models\Ozones;
 use ACA\Models\ElementConfiguration;
-
+use Exception;
 
 class DashboardController extends Controller
 {
@@ -71,5 +71,38 @@ class DashboardController extends Controller
             'nitrogens' => $nitrogens,
             'ozones' => $ozones,
         ], 200);
+    }
+
+    public function getDataChart(Request $request) {
+        $toDate = $request->toDate;
+        $request->toDate = date_create($request->toDate);
+        date_time_set($request->toDate, 23, 59, 59);
+        // Log::info($request->id);
+        // Log::info($request->fromDate);
+        // Log::info(date_format($request->toDate, 'Y-m-d H:i:s'));
+        switch ($request->id) {
+            case 1: $data = Temperature::whereBetween('hour', [$request->fromDate, $request->toDate])->get();
+                break;
+            case 2: $data = Humidity::whereBetween('hour', [$request->fromDate, $request->toDate])->get();
+                break;
+            case 3: $data = CarbonDioxide::whereBetween('hour', [$request->fromDate, $request->toDate])->get();
+                break;
+            case 4: $data = Monoxide::whereBetween('hour', [$request->fromDate, $request->toDate])->get();
+                break;
+            default: $data = null;
+                break;
+        }
+        if ($data !== null) {
+            return response()->json([
+                'state' => 'Success',
+                'data' => $data,
+                'fromDate' => $request->fromDate,
+                'toDate' => $toDate
+            ], 200);
+        } else {
+            return response()->json([
+                'state' => 'Server error'
+            ], 500);
+        }
     }
 }

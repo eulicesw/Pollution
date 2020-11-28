@@ -16,7 +16,7 @@ class CreateNitrogensTable extends Migration
         Schema::create('nitrogens', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('grade', 30);
-            $table->time('hour');
+            $table->timestamp('hour');
             $table->timestamps();
             $table->softDeletes();
         });
