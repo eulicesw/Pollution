@@ -279,10 +279,14 @@
     var humidities;
     var monoxides;
     var co2s;
+    var nitrogens;
+    var ozones;
     var last_temperature;
     var last_humidity;
     var last_monoxide;
     var last_co2;
+    var last_nitrogen;
+    var last_ozone;
     var elements;
     var charts = [];
     var fromDate;
@@ -304,6 +308,8 @@
         humidities = {!! json_encode($humidities->toArray()) !!};
         co2s = {!! json_encode($carbonDioxides->toArray()) !!};
         monoxides = {!! json_encode($monoxides->toArray()) !!};
+        nitrogens = {!! json_encode($nitrogens->toArray()) !!};
+        ozones = {!! json_encode($ozones->toArray()) !!};
         elements = {!! json_encode($elements_configuration->toArray()) !!};
         drawStatusCharts(true);
         drawMainChart(false);
@@ -377,6 +383,26 @@
                                 last_monoxide = data.monoxides;
                                 new_grade = last_monoxide.grade;
                                 new_time = last_monoxide.hour;
+                                chart.config.data.datasets[0].data.push({
+                                    t: new Date(), //new_time
+                                    y: new_grade
+                                });
+                                break;
+                            case 5:
+                                chart = charts[element_id - 1];
+                                last_nitrogen = data.nitrogens;
+                                new_grade = last_nitrogen.grade;
+                                new_time = last_nitrogen.hour;
+                                chart.config.data.datasets[0].data.push({
+                                    t: new Date(), //new_time
+                                    y: new_grade
+                                });
+                                break;
+                            case 6:
+                                chart = charts[element_id - 1];
+                                last_ozone = data.ozones;
+                                new_grade = last_ozone.grade;
+                                new_time = last_ozone.hour;
                                 chart.config.data.datasets[0].data.push({
                                     t: new Date(), //new_time
                                     y: new_grade
@@ -504,6 +530,12 @@
                 case 4: //window.monoxide = new Chart(ctx, config);
                     ctx = new Chart(ctx, config);
                     break;
+                case 5: //window.monoxide = new Chart(ctx, config);
+                    ctx = new Chart(ctx, config);
+                    break;
+                case 6: //window.monoxide = new Chart(ctx, config);
+                    ctx = new Chart(ctx, config);
+                    break;
             }
             charts.push(ctx);
             var inter = setInterval(() => {
@@ -585,6 +617,8 @@
                         var humidity = response.data.humidities.grade;
                         var carbonDioxide = response.data.carbondioxides.grade;
                         var monoxide = response.data.monoxides.grade;
+                        var nitrogen = response.data.nitrogens.grade;
+                        var ozone = response.data.ozones.grade;
 
                         // Gauges Graficas
                         for (var x = 0; x < elements.length; x++) {
@@ -615,6 +649,18 @@
                                         break;
                                     case 4:
                                         value = monoxide;
+                                        ticks = [50, 30, 10, 8, 5, 0];
+                                        max = 50;
+                                        minorTicks = 10;
+                                        break;
+                                    case 5:
+                                        value = nitrogen;
+                                        ticks = [50, 30, 10, 8, 5, 0];
+                                        max = 50;
+                                        minorTicks = 10;
+                                        break;
+                                    case 6:
+                                        value = ozone;
                                         ticks = [50, 30, 10, 8, 5, 0];
                                         max = 50;
                                         minorTicks = 10;
@@ -687,14 +733,6 @@
                 }
             }
         }
-
-        // var qty = temperatures.length; 
-        // // BUG: If the data is less than 10, make an error.
-        // return [temperatures[qty-10].hour, temperatures[qty-9].hour, temperatures[qty-8].hour, 
-        //     temperatures[qty-7].hour, temperatures[qty-6].hour, temperatures[qty-5].hour, 
-        //     temperatures[qty-4].hour, temperatures[qty-3].hour, temperatures[qty-2].hour, 
-        //     temperatures[qty-1].hour];
-
         //Esto me trae la informacion de cada hora.
         // console.log(temperatures);
         // var time = new Array();
@@ -704,15 +742,30 @@
 
     // By element name
     function getData(data) {
-        if (data == "Temperature") {
-            var typeData = temperatures;
-        } else if (data == "Humidity") {
-            var typeData = humidities;
-        } else if (data == "CarbonDioxide") {
-            var typeData = co2s;
-        } else if (data == "Monoxide") {
-            var typeData = monoxides;
+        var typeData;
+        switch (data) {
+            case "Temperature": typeData = temperatures;
+                break;
+            case "Humidity": typeData = humidities;
+                break;
+            case "CarbonDioxide": typeData = co2s;
+                break;
+            case "Monoxide": typeData = monoxides;
+                break;
+            case "Nitrogen": typeData = nitrogens;
+                break;
+            case "Ozone": typeData = ozones;
+                break;
         }
+        // if (data == "Temperature") {
+        //     var typeData = temperatures;
+        // } else if (data == "Humidity") {
+        //     var typeData = humidities;
+        // } else if (data == "CarbonDioxide") {
+        //     var typeData = co2s;
+        // } else if (data == "Monoxide") {
+        //     var typeData = monoxides;
+        // }
         var grades = [];
         typeData.forEach(element => grades.push({
             t: element.hour,
@@ -747,14 +800,19 @@
 
     function getMaximum(element_name) {
         var data;
-        if (element_name == "Temperature") {
-            data = temperatures;
-        } else if (element_name == "Humidity") {
-            data = humidities;
-        } else if (element_name == "CarbonDioxide") {
-            data = co2s;
-        } else if (element_name == "Monoxide") {
-            data = monoxides;
+        switch (element_name) {
+            case "Temperature": data = temperatures;
+                break;
+            case "Humidity": data = humidities;
+                break;
+            case "CarbonDioxide": data = co2s;
+                break;
+            case "Monoxide": data = monoxides;
+                break;
+            case "Nitrogen": data = nitrogens;
+                break;
+            case "Ozone": data = ozones;
+                break;
         }
         var maximum = 0;
         var index = 0;
@@ -894,6 +952,10 @@
             case 3: co2s = data;
                 break;
             case 4: monoxides = data;
+                break;
+            case 5: nitrogens = data;
+                break;
+            case 6: ozones = data;
                 break;
         }
     }
