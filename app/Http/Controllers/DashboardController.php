@@ -38,13 +38,12 @@ class DashboardController extends Controller
         $from = date("Y-m-d");
         $to = date("Y-m-d H:i:s");
         // Send data to page.
-        $carbonDioxides = CarbonDioxide::whereBetween('hour', [$from, $to])->get();
-        $temperatures = Temperature::whereBetween('hour', [$from, $to])->get();
-        // $temperatures = Temperature::all();
-        $humidities = Humidity::whereBetween('hour', [$from, $to])->get();
-        $monoxides = Monoxide::whereBetween('hour', [$from, $to])->get();
-        $nitrogens = Nitrogens::whereBetween('hour', [$from, $to])->get();
-        $ozones = Ozones::whereBetween('hour', [$from, $to])->get();
+        $carbonDioxides = CarbonDioxide::whereBetween('hour', [$from, $to])->orderBy('hour', 'ASC')->get();
+        $temperatures = Temperature::whereBetween('hour', [$from, $to])->orderBy('hour', 'ASC')->get();
+        $humidities = Humidity::whereBetween('hour', [$from, $to])->orderBy('hour', 'ASC')->get();
+        $monoxides = Monoxide::whereBetween('hour', [$from, $to])->orderBy('hour', 'ASC')->get();
+        $nitrogens = Nitrogens::whereBetween('hour', [$from, $to])->orderBy('hour', 'ASC')->get();
+        $ozones = Ozones::whereBetween('hour', [$from, $to])->orderBy('hour', 'ASC')->get();
         $elements_configuration = ElementConfiguration::all();
         $user = Auth::user();
         $title = "ACA | Dashboard";
@@ -81,13 +80,17 @@ class DashboardController extends Controller
         // Log::info($request->fromDate);
         // Log::info(date_format($request->toDate, 'Y-m-d H:i:s'));
         switch ($request->id) {
-            case 1: $data = Temperature::whereBetween('hour', [$request->fromDate, $request->toDate])->get();
+            case 1: $data = Temperature::whereBetween('hour', [$request->fromDate, $request->toDate])->orderBy('hour', 'DESC')->get();
                 break;
-            case 2: $data = Humidity::whereBetween('hour', [$request->fromDate, $request->toDate])->get();
+            case 2: $data = Humidity::whereBetween('hour', [$request->fromDate, $request->toDate])->orderBy('hour', 'DESC')->get();
                 break;
-            case 3: $data = CarbonDioxide::whereBetween('hour', [$request->fromDate, $request->toDate])->get();
+            case 3: $data = CarbonDioxide::whereBetween('hour', [$request->fromDate, $request->toDate])->orderBy('hour', 'DESC')->get();
                 break;
-            case 4: $data = Monoxide::whereBetween('hour', [$request->fromDate, $request->toDate])->get();
+            case 4: $data = Monoxide::whereBetween('hour', [$request->fromDate, $request->toDate])->orderBy('hour', 'DESC')->get();
+                break;
+            case 5: $data = Nitrogens::whereBetween('hour', [$request->fromDate, $request->toDate])->orderBy('hour', 'DESC')->get();
+                break;
+            case 6: $data = Ozones::whereBetween('hour', [$request->fromDate, $request->toDate])->orderBy('hour', 'DESC')->get();
                 break;
             default: $data = null;
                 break;

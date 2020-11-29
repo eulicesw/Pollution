@@ -514,7 +514,7 @@
                         // }
                     ]
                 },
-                options: getSettingsChart(true, element.name, element.unit)
+                options: getSettingsChart(element.name, element.unit)
             };
             var ctx = document.getElementById('canvas_' + element.name).getContext('2d');
             switch (element.id) {
@@ -544,11 +544,8 @@
             intervals.push(inter);
         }
 
-        function getSettingsChart(titleDefault, element_name, element_unit) {
+        function getSettingsChart(element_name, element_unit) {
             var titleChart = "Today's record";
-            if (!titleDefault) {
-                titleChart = "New record";
-            }
             return {
                 responsive: true,
                     title: {
@@ -631,38 +628,63 @@
                                 switch (elements[x].id) {
                                     case 1:
                                         value = temperature;
-                                        ticks = [30, 25, 20, 15, 10, 5, 0];
-                                        max = 30;
+                                        // console.log('%c Gauge value: ', 'color:green;font-size:16px;', value);
+                                        ticks = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
+                                        max = elements[x].max;
+                                        min = 0;
+                                        greenTo = elements[x].min;
+                                        yellowTo = elements[x].neutral;
+                                        redTo = elements[x].max;
                                         minorTicks = 5;
                                         break;
                                     case 2:
                                         value = humidity;
-                                        ticks = [100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0];
-                                        max = 100;
+                                        ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+                                        max = elements[x].max;
+                                        min = 0;
+                                        greenTo = elements[x].min;
+                                        yellowTo = elements[x].neutral;
+                                        redTo = elements[x].max;
                                         minorTicks = 10;
                                         break;
                                     case 3:
                                         value = carbonDioxide;
-                                        ticks = [1000, 900, 800, 700, 600, 500, 400, 300, 200, 100, 0];
-                                        max = 1000;
+                                        ticks = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+                                        max = elements[x].max;
+                                        min = 0;
+                                        greenTo = elements[x].min;
+                                        yellowTo = elements[x].neutral;
+                                        redTo = elements[x].max;
                                         minorTicks = 10;
                                         break;
                                     case 4:
                                         value = monoxide;
-                                        ticks = [50, 30, 10, 8, 5, 0];
-                                        max = 50;
+                                        ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 80, 100];
+                                        max = elements[x].max;
+                                        min = 0;
+                                        greenTo = elements[x].min;
+                                        yellowTo = elements[x].neutral;
+                                        redTo = elements[x].max;
                                         minorTicks = 10;
                                         break;
                                     case 5:
                                         value = nitrogen;
-                                        ticks = [50, 30, 10, 8, 5, 0];
-                                        max = 50;
+                                        ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+                                        max = elements[x].max;
+                                        min = 0;
+                                        greenTo = elements[x].min;
+                                        yellowTo = elements[x].neutral;
+                                        redTo = elements[x].max;
                                         minorTicks = 10;
                                         break;
                                     case 6:
                                         value = ozone;
-                                        ticks = [50, 30, 10, 8, 5, 0];
-                                        max = 50;
+                                        ticks = [0, 100, 200, 300, 400, 500];
+                                        max = elements[x].max;
+                                        min = 0;
+                                        greenTo = elements[x].min;
+                                        yellowTo = elements[x].neutral;
+                                        redTo = elements[x].max;
                                         minorTicks = 10;
                                         break;
                                     default:
@@ -672,25 +694,41 @@
                                     ['Label', 'Value'],
                                     [elements[x].unit, parseInt(value)]
                                 ]);
+                                // var options = {
+                                //     width: 200, height: 200,
+                                //     // redFrom: max, redTo: elements[x].max,
+                                //     // yellowFrom: elements[x].min, yellowTo: min,
+                                //     // greenFrom: elements[x].max, greenTo: elements[x].min,
+                                //     redFrom: 25, redTo: 50,
+                                //     yellowFrom: 10, yellowTo: 25,
+                                //     greenFrom: 0, greenTo: 10,
+                                //     // minorTicks: max,
+                                //     max: 50,
+                                //     min: 0,
+                                //     majorTicks: ticks,
+                                //     minorTicks: minorTicks,
+                                //     animation: {
+                                //         duration: 500,
+                                //         easing: "in"
+                                //     }
+                                // };
+
                                 var options = {
-                                    width: 200,
-                                    height: 200,
-                                    redFrom: max,
-                                    redTo: elements[x].max,
-                                    yellowFrom: elements[x].min,
-                                    yellowTo: min,
-                                    greenFrom: elements[x].max,
-                                    greenTo: elements[x].min,
-                                    // minorTicks: max,
-                                    max: min,
-                                    min: max,
-                                    majorTicks: ticks,
+                                    width: 200, height: 200,
+                                    redFrom: yellowTo, redTo: redTo,
+                                    yellowFrom: greenTo, yellowTo: yellowTo,
+                                    greenFrom: min, greenTo: greenTo,
                                     minorTicks: minorTicks,
+                                    // Agregue desde aqui
+                                    majorTicks: ticks,
+                                    max: max, // Debe coincider el valor maximo con el ultimo numero de ticks.
+                                    min: min,
                                     animation: {
                                         duration: 500,
                                         easing: "in"
                                     }
                                 };
+
                                 var chart = new google.visualization.Gauge(document.getElementById(elements[x].name));
                                 chart.draw(data, options);
                             }
@@ -785,16 +823,6 @@
                 minimum = temperatures[total + index].grade;
             }
         }
-        // var total = humidities.length;
-        // var index = 0;
-        // // For humidities.
-        // for (var x = 0;x < 10; x++) {
-        //     index = index - 1;
-        //     if (humidities[total + index].grade < minimum) {
-        //         minimum = humidities[total + index].grade;
-        //     }
-        // }
-        console.log('%c Info min: ', 'color:green;font-size:16px;', minimum);
         return minimum;
     }
 
@@ -824,16 +852,6 @@
                 maximum = data[total + index].grade;
             }
         }
-        // var total = humidities.length;
-        // var index = 0;
-        // // For humidities.
-        // for (var x = 0;x < 10; x++) {
-        //     index = index - 1;
-        //     if (humidities[total + index].grade > maximum) {
-        //         maximum = humidities[total + index].grade;
-        //     }
-        // }
-        console.log('%c Info max: ', 'color:green;font-size:16px;', maximum);
         return maximum;
     }
 
@@ -918,7 +936,6 @@
         today.setSeconds(00);
         today.setMilliseconds(00);
         if (f_date.getTime() === today.getTime() && t_date.getTime() === today.getTime()) {
-            console.log("Inside today");
             chart.config.options.title.text = "Today's record";
             chart.config.options.scales.xAxes[0].time.tooltipFormat = 'h:mm:ss a';
             var inter = setInterval(() => {
@@ -926,17 +943,16 @@
             }, 5000);
             intervals[element_id - 1] = inter;
         } else if (f_date.getTime() === t_date.getTime()) {
-            console.log("Inside 1 day");
-            chart.config.options.title.text = 'History between 1 day (' + formatDate(f_date) + ' / ' + formatDate(t_date) + ')';
+            chart.config.options.title.text = 'History of day ' + formatDate(f_date);
             chart.config.options.scales.xAxes[0].time.tooltipFormat = 'h:mm:ss a';
         } else if (diff_date < 7) {
             txt_date_complement = (diff_date == 1) ? 'day' : 'days';
-            chart.config.options.title.text = 'History between ' + diff_date + ' ' + txt_date_complement + ' (' + formatDate(f_date) + ' / ' + formatDate(t_date) + ')';
+            chart.config.options.title.text = 'History between ' + diff_date + ' ' + txt_date_complement + ' (' + formatDate(f_date) + ' - ' + formatDate(t_date) + ')';
             chart.config.options.scales.xAxes[0].time.tooltipFormat = 'MMM D, h:mm A';
         } else {
             diff_date = Math.trunc(diff_date / 7);
             txt_date_complement = (diff_date == 1) ? 'week' : 'weeks';
-            chart.config.options.title.text = 'History between ' + diff_date + ' ' + txt_date_complement + ' (' + formatDate(f_date) + ' / ' + formatDate(t_date) + ')';
+            chart.config.options.title.text = 'History between ' + diff_date + ' ' + txt_date_complement + ' (' + formatDate(f_date) + ' - ' + formatDate(t_date) + ')';
             chart.config.options.scales.xAxes[0].time.tooltipFormat = 'MMM D, h:mm A';
         }
         dataset.data = getData(elements[element_id - 1].name); // Update dataset with data obtained by dates.

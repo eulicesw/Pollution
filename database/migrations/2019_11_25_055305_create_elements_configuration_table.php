@@ -27,12 +27,12 @@ class CreateElementsConfigurationTable extends Migration
             $table->softDeletes();
         });
 
-        $temperature = array("name" => "Temperature", "min" => "10", "max" => "30", "neutral" => "20", "unit" => "°C", "switched_on" => true, "colour" => "rgb(255, 159, 64)");
+        $temperature = array("name" => "Temperature", "min" => "15", "max" => "50", "neutral" => "35", "unit" => "°C", "switched_on" => true, "colour" => "rgb(255, 159, 64)");
         $humidity = array("name" => "Humidity", "min" => "20", "max" => "100", "neutral" => "40", "unit" => "RH %", "switched_on" => true, "colour" => "rgb(54, 162, 235)");
-        $carbonDioxide = array("name" => "CarbonDioxide", "min" => "150", "max" => "300", "neutral" => "300", "unit" => "ppm", "switched_on" => true, "colour" => "rgb(75, 192, 192)");
-        $monoxide = array("name" => "Monoxide", "min" => "0", "max" => "50", "neutral" => "10", "unit" => "ppm", "switched_on" => true, "colour" => "rgb(255, 99, 132)");
-        $nitrogen = array("name" => "Nitrogen", "min" => "0", "max" => "200", "neutral" => "40", "unit" => "ppb", "switched_on" => true, "colour" => "rgb(153, 102, 255)");
-        $ozone = array("name" => "Ozone", "min" => "0", "max" => "105", "neutral" => "55", "unit" => "ppb", "switched_on" => true, "colour" => "rgb(255, 205, 86)");
+        $carbonDioxide = array("name" => "CarbonDioxide", "min" => "400", "max" => "1000", "neutral" => "600", "unit" => "ppm", "switched_on" => true, "colour" => "rgb(75, 192, 192)");
+        $monoxide = array("name" => "Monoxide", "min" => "15", "max" => "100", "neutral" => "70", "unit" => "ppm", "switched_on" => true, "colour" => "rgb(255, 99, 132)");
+        $nitrogen = array("name" => "Nitrogen", "min" => "40", "max" => "100", "neutral" => "70", "unit" => "ppb", "switched_on" => true, "colour" => "rgb(153, 102, 255)");
+        $ozone = array("name" => "Ozone", "min" => "50", "max" => "500", "neutral" => "110", "unit" => "ppb", "switched_on" => true, "colour" => "rgb(255, 205, 86)");
 
         DB::table("elements_configuration")->insert(array ($temperature, $humidity, $carbonDioxide, $monoxide, $nitrogen, $ozone));
     }
