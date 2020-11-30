@@ -31,10 +31,11 @@
                 <div class="col-12 text-center">
                     <form class="form-inline justify-content-center">
                         <label for="from_date" class="mr-sm-2">From: </label>
-                        <input type="date" class="form-control mr-2" id="fromDate_{{ $ec->id }}" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d', strtotime('-2 week', strtotime(date('Y-m-d')))) }}" max="{{ date('Y-m-d') }}" required>
+                        <input type="date" class="form-control mr-2" id="fromDate_{{ $ec->id }}" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d', strtotime('-1 month', strtotime(date('Y-m-d')))) }}" max="{{ date('Y-m-d') }}" required>
                         <label for="to_date" class="mr-sm-2">To: </label>
                         <input type="date" class="form-control mr-4" id="toDate_{{ $ec->id }}" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d', strtotime('-2 week', strtotime(date('Y-m-d')))) }}" max="{{ date('Y-m-d') }}" required>
-                        <button id="button_{{ $ec->id }}" type="button" class="btn btn btn-outline-secondary btn-sm mb-2" onclick="getDataChart({!! $ec->id !!})">Search</button>
+                        <button id="button_{{ $ec->id }}" type="button" class="btn btn btn-outline-secondary btn-sm mb-2" onclick="getDataChart({!! $ec->id !!})" data-toggle="tooltip" data-placement="top" title="Search">Search</button>
+                        <button class="btn btn btn-outline-secondary btn-sm mb-2" onclick="printChartPDF({!! $ec->name !!})" data-toggle="tooltip" data-placement="top" title="Print chart to PDF"><span  class="fa fa-file-pdf-o" aria-hidden="true"></span></button>
                     </form>
                     <canvas id="canvas_{{ $ec->name }}"></canvas>
                 </div>
@@ -487,8 +488,8 @@
                             borderColor: element.colour,
                             data: getData(element.name), // Function get grades from the type of enviorment.
                             fill: false,
-                            pointRadius: 1,
-                            // lineTension: 0,
+                            pointRadius: 0,
+                            lineTension: 0,
                             borderWidth: 2
                         } //, 
                         // {
@@ -984,6 +985,36 @@
 
     function formatDate(date) {
         return date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
+    }
+
+    function printChartPDF(element_name) {
+        // get size of report page
+        console.log(element_name);
+        var reportPageHeight = $('#canvas_' + element_name).innerHeight();
+        var reportPageWidth = $('#canvas_' + element_name).innerWidth();
+
+        var pdfCanvas = $('<canvas />').attr({
+            id: "canvaspdf",
+            width: reportPageWidth,
+            height: reportPageHeight
+        });
+
+        // keep track canvas position
+        var pdfctx = $(pdfCanvas)[0].getContext('2d');
+        var pdfctxX = 0;
+        var pdfctxY = 0;
+        var buffer = 100;
+
+        // draw the chart into the new canvas
+        pdfctx.drawImage($(this)[0], pdfctxX, pdfctxY, reportPageWidth, reportPageHeight);
+        pdfctxX += reportPageWidth + buffer;
+
+        // create new pdf and add our new canvas as an image
+        var pdf = new jsPDF('l', 'pt', [reportPageWidth, reportPageHeight]);
+        pdf.addImage($(pdfCanvas)[0], 'PNG', 0, 0);
+        
+        // download the pdf
+        pdf.save(element_name + '.pdf');
     }
 
 </script>
