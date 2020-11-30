@@ -8,17 +8,28 @@
 </div>
 <div class="card m-4">
     <div class="row">
-        <div class="col-12 text-center" style="padding-top:15px;padding-bottom:30px;">
+        <div class="col-3 text-center m-auto" style="padding-top:15px;padding-bottom:30px;">
             <div class="row">
-                <div class="col-xs-12 col-sm-4 col-md-3 m-auto">
-                    <div>
-                        <h4 class="mb-5">AQI <i class="fas fa-info-circle hover-green"></i></h4>
-                        <h1 class="mb-4">25</h4>
-                        <h5>Updated on: Today 05:00</h5>
+                <div class="col-12">
+                    <div id="aqi" class="bg-warning" style="margin: 0 0 0 auto;border-radius: 25px;">
+                        <h4 class="mb-3">AQI <i data-target="#exampleModalCenter" data-toggle="modal" class="fas fa-info-circle c-white hover-green"></i></h4>
+                        <p id="update_aqi" class="mb-3 c-white" style="font-size: 5.8rem !important;">52</p>
+                        <h5>Updated on: Today <strong id="update_time"></strong></h5>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="col-9 text-center" style="padding-top:15px;padding-bottom:30px;">
+            <div class="row">
+                <!-- <div class="col-xs-12 col-sm-4 col-md-3 m-auto">
+                    <div id="aqi" style="background-color: green;margin: 0 auto;border-radius: 25px;">
+                        <h4 class="mb-3">AQI <i data-target="#exampleModalCenter" data-toggle="modal" class="fas fa-info-circle c-white hover-green"></i></h4>
+                        <p id="updated_aqi" class="mb-3 c-white" style="font-size: 5.8rem !important;">25</p>
+                        <h5>Updated on: <strong id="updated_on">Today 05:00</strong></h5>
+                    </div>
+                </div> -->
                 @foreach($elements_configuration as $element_configuration)
-                <div class="col-xs-12 col-sm-4 col-md-3 m-auto">
+                <div class="col-xs-12 col-sm-4 col-md-4 m-auto">
                     @if($element_configuration->switched_on)
                     <div>
                         <h5 class="title-chartstatus">{{ $element_configuration->name }}</h5>
@@ -300,6 +311,7 @@
     var fromDate;
     var toDate;
     var intervals = [];
+    var es;
     $(document).ready(function() {
         $('a[href="/"]').removeClass("active");
         $('a[href="/dashboard"]').addClass("active");
@@ -319,10 +331,14 @@
         nitrogens = {!! json_encode($nitrogens->toArray()) !!};
         ozones = {!! json_encode($ozones->toArray()) !!};
         elements = {!! json_encode($elements_configuration->toArray()) !!};
+        es = {!! json_encode($elements_configuration->toArray()) !!};
+        updateAQI(true);
+        setInterval(() => {
+            updateAQI(false);
+        }, 5000);
         drawStatusCharts(true);
         drawMainChart(false);
         updateStatusCharts();
-        // updateMainsCharts();
     });
 
     function drawMainChart(newRequest, element_id) {
@@ -340,21 +356,6 @@
                         var new_grade;
                         var new_time;
                         var chart;
-                        // last_temperature = data.temperatures;
-                        // last_humidity = data.humidities;
-                        // last_co2 = data.carbondioxides;
-                        // last_monoxide = data.monoxides;
-                        // console.log('%c Last data temp: ', 'color:green;font-size:16px;', last_temperature.grade);
-                        // console.log('%c Last data humi: ', 'color:green;font-size:16px;', last_humidity.grade);
-                        // console.log('%c Last data co2: ', 'color:green;font-size:16px;', last_co2.grade);
-                        // console.log('%c Last data mono: ', 'color:green;font-size:16px;', last_monoxide.grade);
-                        // window.myLine.data.labels.splice(0, 1); // Remove first label.
-                        // window.myLine.data.datasets[0].data.splice(0, 1);
-                        // window.myLine.data.datasets[1].data.splice(0, 1);
-                        // window.myLine.data.datasets[2].data.splice(0, 1);
-                        // window.myLine.data.datasets[3].data.splice(0, 1);
-                        // var totalTemp = temperatures.length;
-                        // var totalHum = humidities.length;
                         switch (element_id) {
                             case 1:
                                 chart = charts[element_id - 1];
@@ -418,44 +419,6 @@
                                 break;
                         }
                         chart.update();
-                        // elements.forEach(element => {
-                        //     // switch (element.id) {
-                        //     //     case 1: charts[element.id - 1].config.data.dataset
-                        //     // }
-                        //     var new_grade;
-                        //     var new_time;
-                        //     var index = element.id - 1;
-                        //     var chart = charts[index];
-                        //     console.log('%c Chart: ', 'color:green;font-size:16px;', chart);
-                        //     console.log('%c Element id : ', 'color:green;font-size:16px;', element.id);
-                        //     switch(element.id) {
-                        //         case 1: new_grade = last_temperature.grade;
-                        //                 new_time = last_temperature.hour;
-                        //             break;
-                        //         case 2: new_grade = last_humidity.grade;
-                        //                 new_time = last_humidity.hour;
-                        //             break;
-                        //         case 3: new_grade = last_co2.grade;
-                        //                 new_time = last_co2.hour;
-                        //             break;
-                        //         case 4: new_grade = last_monoxide.grade;
-                        //                 new_time = last_monoxide.hour;
-                        //             break;
-                        //     }
-                        //     console.log('%c Dataset: ', 'color:green;font-size:16px;', chart.config.data.datasets[0]);
-                        //     chart.config.data.datasets[0].data.push({
-                        //         t: new Date(), //new_time
-                        //         y: new_grade
-                        //     });
-                        //     chart.update();
-                        // });
-
-                        // window.myLine.data.labels.push(temperatures.hour); // Se actualiza la hora.
-                        // window.myLine.data.datasets[0].data[9] = temperatures.grade; // Actualiza los grados.
-                        // window.myLine.data.datasets[1].data[9] = humidities.grade; // Actualiza los grados.
-                        // window.myLine.data.datasets[2].data[9] = co2s.grade; // Actualiza el CO2.
-                        // window.myLine.data.datasets[3].data[9] = monoxides.grade; // Actualiza el Monoxido de carbono.
-                        // window.myLine.update();
                         updateTimeLabel();
                     } else {
                         console.log('%c Error: ', 'color:red;font-size:16px;', 'Error server.');
@@ -464,23 +427,6 @@
             });
         } else {
             elements.forEach(element => createMainChart(element));
-            /*document.getElementById("canvas").onclick = function(e) {
-                var activeElement = window.myLine.lastTooltipActive;
-            console.log(activeElement);
-                    var hiddenDatasets = [];
-                    var count = 0;
-                    console.log(window.myLine.data.datasets.length);
-                    for(var i = 0; i < window.myLine.data.datasets.length; i++) {
-                            console.log('%c IsDataSetVisible:', 'color:green;font-size:16px;', window.myLine.isDatasetVisible(i));
-                            if (!window.myLine.isDatasetVisible(i)) {
-                                    console.log('Inside if');
-                                    count++;
-                                    hiddenDatasets.push(window.myLine.data.datasets[i]);
-                            }
-                            console.log(count);
-                    }
-                    console.log(hiddenDatasets);
-            };*/
         }
 
         // Creating main chart.
@@ -498,28 +444,7 @@
                             pointRadius: 0,
                             lineTension: 0,
                             borderWidth: 2
-                        } //, 
-                        // {
-                        //     label: 'Humidity (% RH)',
-                        //     fill: false,
-                        //     backgroundColor: window.chartColors.blue,
-                        //     borderColor: window.chartColors.blue,
-                        //     data: getData('humidity'), // Function get grades from the type of enviorment.
-                        // }, 
-                        // {
-                        //     label: 'Carbon Dioxide (ppm)',
-                        //     fill: false,
-                        //     backgroundColor: window.chartColors.green,
-                        //     borderColor: window.chartColors.green,
-                        //     data: getData('carbonDioxide'), // Change for dinamyc data.
-                        // }, 
-                        // {
-                        //     label: 'Carbon Monoxide (ppm)',
-                        //     fill: false,
-                        //     backgroundColor: window.chartColors.red,
-                        //     borderColor: window.chartColors.red,
-                        //     data: getData('monoxide'), // Change for dinamyc data.
-                        // }
+                        }
                     ]
                 },
                 options: getSettingsChart(element.name, element.unit)
@@ -599,11 +524,7 @@
                                 sampleSize: 100
                             }
                         }]
-                    }//,
-                    // legend: {
-                    //     onHover: function(event, legendItem) {
-                    //     document.getElementById("canvas").style.cursor = 'pointer';
-                    // }
+                    }
             }
         }
     }
@@ -657,27 +578,27 @@
                                         break;
                                     case 3:
                                         value = carbonDioxide;
-                                        ticks = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+                                        ticks = [0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000];
                                         max = elements[x].max;
                                         min = 0;
                                         greenTo = elements[x].min;
                                         yellowTo = elements[x].neutral;
                                         redTo = elements[x].max;
-                                        minorTicks = 10;
+                                        minorTicks = 5;
                                         break;
                                     case 4:
                                         value = monoxide;
-                                        ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 80, 100];
+                                        ticks = [0, 5, 10, 15, 20, 25, 30];
                                         max = elements[x].max;
                                         min = 0;
                                         greenTo = elements[x].min;
                                         yellowTo = elements[x].neutral;
                                         redTo = elements[x].max;
-                                        minorTicks = 10;
+                                        minorTicks = 5;
                                         break;
                                     case 5:
                                         value = nitrogen;
-                                        ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+                                        ticks = [0, 100, 200, 300, 400, 500];
                                         max = elements[x].max;
                                         min = 0;
                                         greenTo = elements[x].min;
@@ -687,7 +608,7 @@
                                         break;
                                     case 6:
                                         value = ozone;
-                                        ticks = [0, 100, 200, 300, 400, 500];
+                                        ticks = [0, 100, 200, 300, 400, 500, 600];
                                         max = elements[x].max;
                                         min = 0;
                                         greenTo = elements[x].min;
@@ -702,24 +623,6 @@
                                     ['Label', 'Value'],
                                     [elements[x].unit, parseInt(value)]
                                 ]);
-                                // var options = {
-                                //     width: 200, height: 200,
-                                //     // redFrom: max, redTo: elements[x].max,
-                                //     // yellowFrom: elements[x].min, yellowTo: min,
-                                //     // greenFrom: elements[x].max, greenTo: elements[x].min,
-                                //     redFrom: 25, redTo: 50,
-                                //     yellowFrom: 10, yellowTo: 25,
-                                //     greenFrom: 0, greenTo: 10,
-                                //     // minorTicks: max,
-                                //     max: 50,
-                                //     min: 0,
-                                //     majorTicks: ticks,
-                                //     minorTicks: minorTicks,
-                                //     animation: {
-                                //         duration: 500,
-                                //         easing: "in"
-                                //     }
-                                // };
 
                                 var options = {
                                     width: 200, height: 200,
@@ -755,13 +658,6 @@
         }, 5000);
     }
 
-    // Update main chart each 5 seconds.
-    // function updateMainsCharts() {
-    //     intervalMainChart = setInterval(() => {
-    //         drawMainChart(true);
-    //     }, 5000);
-    // }
-
     function getLabels(fromDate, toDate) {
         if (fromDate === undefined && toDate === undefined) {
             var hours = new Array();
@@ -779,11 +675,6 @@
                 }
             }
         }
-        //Esto me trae la informacion de cada hora.
-        // console.log(temperatures);
-        // var time = new Array();
-        // temperatures.forEach(data => time.push(data.hour));
-        // return time;
     }
 
     // By element name
@@ -803,15 +694,6 @@
             case "Ozone": typeData = ozones;
                 break;
         }
-        // if (data == "Temperature") {
-        //     var typeData = temperatures;
-        // } else if (data == "Humidity") {
-        //     var typeData = humidities;
-        // } else if (data == "CarbonDioxide") {
-        //     var typeData = co2s;
-        // } else if (data == "Monoxide") {
-        //     var typeData = monoxides;
-        // }
         var grades = [];
         typeData.forEach(element => grades.push({
             t: element.hour,
@@ -1014,23 +896,6 @@
         var pdfctxY = 0;
         var buffer = 100;
 
-        // for each chart.js chart
-        // $("canvas_" + element_name).each(function(index) {
-        //     // get the chart height/width
-        //     var canvasHeight = $(this).innerHeight();
-        //     var canvasWidth = $(this).innerWidth();
-            
-        //     // draw the chart into the new canvas
-        //     pdfctx.drawImage($(this)[0], pdfctxX, pdfctxY, canvasWidth, canvasHeight);
-        //     pdfctxX += canvasWidth + buffer;
-            
-        //     // our report page is in a grid pattern so replicate that in the new canvas
-        //     if (index % 2 === 1) {
-        //         pdfctxX = 0;
-        //         pdfctxY += canvasHeight + buffer;
-        //     }
-        // });
-
         // draw the chart into the new canvas
         pdfctx.drawImage(canvas[0], pdfctxX, pdfctxY, reportPageWidth, reportPageHeight);
         pdfctxX += reportPageWidth + buffer;
@@ -1043,6 +908,121 @@
         pdf.save(element_name + '.pdf');
         $('#pdf_' + element_name).attr("disabled", false);
         $('#pdf_' + element_name).html('<span class="fa fa-file-pdf-o" aria-hidden="true"></span>');
+    }
+
+    function updateAQI(firstTime) {
+        $.ajax({
+            url: 'dashboard/update',
+            type: 'GET',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: null,
+            success: function(data, textStatus, xhr) {
+                if (xhr.status === 200) {
+                    last_co2 = data.carbondioxides;
+                    last_monoxide = data.monoxides;
+                    last_nitrogen = data.nitrogens;
+                    last_ozone = data.ozones;
+                    var indexs = [];
+                    var max = (firstTime) ? 6 : 4;
+                    for (var i = 0; i < max; i++) {
+                        // console.log(es[i].name);
+                        if (es[i].name == "Humidity" || es[i].name == "Temperature") {
+                            indexs.push(i);
+                        }
+                    }
+                    for (var x = indexs.length - 1; x >= 0; x--) {
+                        // console.log(indexs[x]);
+                        es.splice(indexs[x], 1);
+                    }
+                    var grades = [last_co2, last_monoxide, last_nitrogen, last_ozone];
+                    var aqi = getAQI(es, grades);
+                    $('#update_aqi').html(aqi);
+                    var date = new Date();
+                    $('#update_time').html(date.getHours() + ':' + date.getMinutes());
+                    aqi = parseInt(aqi);
+                    switch (true) {
+                        case (aqi < 51):  $('#aqi').removeClass().addClass('bg-success');
+                            break;
+                        case (aqi < 101): $('#aqi').removeClass().addClass('bg-warning');
+                            break;
+                        case (aqi < 151): $('#aqi').removeClass().addClass('bg-orange');
+                            break;
+                        case (aqi < 201): $('#aqi').removeClass().addClass('bg-danger');
+                            break;
+                        case (aqi < 301): $('#aqi').removeClass().addClass('bg-purple');
+                            break;
+                        case (aqi > 300): $('#aqi').removeClass().addClass('bg-blood');
+                            break;
+                        default: console.log('Updating default...');
+                            break;
+                    }
+                } else {
+                    console.log('%c Error: ', 'color:red;font-size:16px;', 'Error server.');
+                }
+            }
+        });
+    }
+
+    function getAQI(es, grades) {
+        var levels = [];
+        var index = 0;
+        var one;
+        var grade;
+        var aqi;
+        // console.log('Inside getAQI');
+        es.forEach(e => {
+            // console.log('Index ' + index);
+            var grade = grades[index].grade; 
+            // console.log('Grade  ' + grade);
+            // console.log('E min ' + e.min);
+            // console.log('E neutral  ' + e.neutral);
+            // console.log('E max ' + e.max);
+            switch (true) {
+                case grade > 0 && grade <= parseInt(e.min): levels.push(1);
+                    break;
+                case grade > parseInt(e.min) && grade <= parseInt(e.neutral): levels.push(2);
+                    break;
+                case grade > parseInt(e.neutral) && grade <= parseInt(e.max): levels.push(3);
+                    break;
+            }
+            index++;
+        });
+        // console.log(levels);
+        var max = levels[0];
+        var maxIndex = 0;
+        for (var i = 0; i < levels.length; i++) {
+            if (levels[i] > max) {
+                maxIndex = i;
+                max = levels[i];
+            }
+        }
+        // console.log('Maxindiex: ' + maxIndex);
+        switch (true) {
+            case max == 1:
+                // console.log('Max == 1 '); 
+                one = es[maxIndex].min / 50;
+                grade = grades[maxIndex].grade;
+                aqi = grade / one;
+                break;
+            case max == 2:
+                // console.log('Max == 2 ');
+                one = es[maxIndex].neutral / 100;
+                grade = grades[maxIndex].grade;
+                aqi = grade / one;
+                break;
+            case max == 3:
+                // console.log('Max == 3 ');
+                one = es[maxIndex].max / 500;
+                console.log(one);
+                grade = grades[maxIndex].grade;
+                console.log(grade);
+                aqi = grade / one;
+                break;
+        }
+        // console.log("AQI: " + aqi);
+        return aqi;
     }
 
 </script>

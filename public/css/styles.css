@@ -1375,5 +1375,13 @@ canvas {
     font-weight: "normal";
 }
 .hover-green:focus, .hover-green:hover {
-    color: green;
+    color: #adb5bd;
+    cursor: pointer;
+}
+.c-white {
+    color: white
+}
+#aqi {
+    height: 200px !important;
+    width: 200px !important;
 }
