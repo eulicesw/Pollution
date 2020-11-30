@@ -94,6 +94,8 @@
             $('#enable_2').prop('checked', newFlags['humidity'] == 1).change();
             $('#enable_3').prop('checked', newFlags['carbonDioxide'] == 1).change();
             $('#enable_4').prop('checked', newFlags['monoxide'] == 1).change();
+            $('#enable_5').prop('checked', newFlags['nitrogen'] == 1).change();
+            $('#enable_6').prop('checked', newFlags['ozone'] == 1).change();
         }
     }
 
@@ -142,7 +144,9 @@
                         "temperature": ($('#enable_1').is(":checked")) ? 1 : 0,
                         "humidity": ($('#enable_2').is(":checked")) ? 1 : 0,
                         "carbonDioxide": ($('#enable_3').is(":checked")) ? 1 : 0,
-                        "monoxide": ($('#enable_4').is(":checked")) ? 1 : 0
+                        "monoxide": ($('#enable_4').is(":checked")) ? 1 : 0,
+                        "nitrogen": ($('#enable_5').is(":checked")) ? 1 : 0,
+                        "ozone": ($('#enable_6').is(":checked")) ? 1 : 0
                     }
                     mqttConnect("proyectoaca/ctrl", JSON.stringify(data));
                     $('#danger').hide(); 
