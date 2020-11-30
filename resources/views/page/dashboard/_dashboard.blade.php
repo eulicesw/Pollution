@@ -35,7 +35,7 @@
                         <label for="to_date" class="mr-sm-2">To: </label>
                         <input type="date" class="form-control mr-4" id="toDate_{{ $ec->id }}" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d', strtotime('-2 week', strtotime(date('Y-m-d')))) }}" max="{{ date('Y-m-d') }}" required>
                         <button id="button_{{ $ec->id }}" type="button" class="btn btn btn-outline-secondary btn-sm mb-2" onclick="getDataChart({!! $ec->id !!})" data-toggle="tooltip" data-placement="top" title="Search">Search</button>
-                        <button class="btn btn btn-outline-secondary btn-sm mb-2" onclick="printChartPDF({!! $ec->name !!})" data-toggle="tooltip" data-placement="top" title="Print chart to PDF"><span  class="fa fa-file-pdf-o" aria-hidden="true"></span></button>
+                        <button id="pdf_{{ $ec->name }}" type="button" class="btn btn btn-outline-secondary btn-sm mb-2" onclick="printChartPDF('{!! $ec->name !!}')" data-toggle="tooltip" data-placement="top" title="Print chart to PDF"><span  class="fa fa-file-pdf-o" aria-hidden="true"></span></button>
                     </form>
                     <canvas id="canvas_{{ $ec->name }}"></canvas>
                 </div>
@@ -988,10 +988,12 @@
     }
 
     function printChartPDF(element_name) {
+        $('#pdf_' + element_name).html('<span class="spinner-border text-dark" role="status"></span><span class="sr-only">Loading...</span>');
+        $('#pdf_' + element_name).attr("disabled", true);
         // get size of report page
-        console.log(element_name);
-        var reportPageHeight = $('#canvas_' + element_name).innerHeight();
-        var reportPageWidth = $('#canvas_' + element_name).innerWidth();
+        var canvas = $('#canvas_' + element_name);
+        var reportPageHeight = canvas.innerHeight();
+        var reportPageWidth = canvas.innerWidth();
 
         var pdfCanvas = $('<canvas />').attr({
             id: "canvaspdf",
@@ -1005,8 +1007,25 @@
         var pdfctxY = 0;
         var buffer = 100;
 
+        // for each chart.js chart
+        // $("canvas_" + element_name).each(function(index) {
+        //     // get the chart height/width
+        //     var canvasHeight = $(this).innerHeight();
+        //     var canvasWidth = $(this).innerWidth();
+            
+        //     // draw the chart into the new canvas
+        //     pdfctx.drawImage($(this)[0], pdfctxX, pdfctxY, canvasWidth, canvasHeight);
+        //     pdfctxX += canvasWidth + buffer;
+            
+        //     // our report page is in a grid pattern so replicate that in the new canvas
+        //     if (index % 2 === 1) {
+        //         pdfctxX = 0;
+        //         pdfctxY += canvasHeight + buffer;
+        //     }
+        // });
+
         // draw the chart into the new canvas
-        pdfctx.drawImage($(this)[0], pdfctxX, pdfctxY, reportPageWidth, reportPageHeight);
+        pdfctx.drawImage(canvas[0], pdfctxX, pdfctxY, reportPageWidth, reportPageHeight);
         pdfctxX += reportPageWidth + buffer;
 
         // create new pdf and add our new canvas as an image
@@ -1015,6 +1034,8 @@
         
         // download the pdf
         pdf.save(element_name + '.pdf');
+        $('#pdf_' + element_name).attr("disabled", false);
+        $('#pdf_' + element_name).html('<span class="fa fa-file-pdf-o" aria-hidden="true"></span>');
     }
 
 </script>
