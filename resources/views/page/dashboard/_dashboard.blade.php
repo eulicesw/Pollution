@@ -10,6 +10,13 @@
     <div class="row">
         <div class="col-12 text-center" style="padding-top:15px;padding-bottom:30px;">
             <div class="row">
+                <div class="col-xs-12 col-sm-4 col-md-3 m-auto">
+                    <div>
+                        <h4 class="mb-5">AQI <i class="fas fa-info-circle hover-green"></i></h4>
+                        <h1 class="mb-4">25</h4>
+                        <h5>Updated on: Today 05:00</h5>
+                    </div>
+                </div>
                 @foreach($elements_configuration as $element_configuration)
                 <div class="col-xs-12 col-sm-4 col-md-3 m-auto">
                     @if($element_configuration->switched_on)
