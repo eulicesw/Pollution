@@ -1022,7 +1022,7 @@
                 break;
         }
         // console.log("AQI: " + aqi);
-        return aqi;
+        return Math.ceil(aqi);
     }
 
 </script>
